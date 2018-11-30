@@ -10,7 +10,9 @@ import java.awt.image.BufferedImage;
 
 public class GamePanel extends JPanel implements Runnable {
 
-    public static int width;
+	private static final long serialVersionUID = 1L;
+	
+	public static int width;
     public static int height;
     public static int oldFrameCount;
     public static int oldTickCount;
@@ -27,8 +29,8 @@ public class GamePanel extends JPanel implements Runnable {
     private GameStateManager gsm;
 
     public GamePanel(int width, int height) {
-        this.width = width;
-        this.height = height;
+        GamePanel.width = width;
+        GamePanel.height = height;
         setPreferredSize(new Dimension(width, height));
         setFocusable(true);
         requestFocus();
@@ -58,7 +60,7 @@ public class GamePanel extends JPanel implements Runnable {
     public void run() {
         init();
 
-        final double GAME_HERTZ = 1000.0;
+        final double GAME_HERTZ = 64.0;
         final double TBU = 1000000000 / GAME_HERTZ; // Time Before Update
 
         final int MUBR = 5; // Must Update before render
@@ -121,7 +123,7 @@ public class GamePanel extends JPanel implements Runnable {
                 try {
                     Thread.sleep(1);
                 } catch(Exception e) {
-                    System.out.println("ERROR: yielding thread");
+                    System.out.println("WARNING: yielding thread");
                 }
 
                 now = System.nanoTime();

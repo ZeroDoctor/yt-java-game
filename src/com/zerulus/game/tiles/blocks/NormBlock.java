@@ -21,5 +21,7 @@ public class NormBlock extends Block {
 
     public void render(Graphics2D g){
         super.render(g);
+		/* g.setColor(Color.green);
+		g.drawString(pos.x / 64 + ((pos.y / 64) * 50)+ ": " + pos.x / w + "," + pos.y / h, pos.x, pos.y); */
     }
 }

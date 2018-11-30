@@ -3,7 +3,6 @@ package com.zerulus.game.graphics;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 
-
 public class Font {
 
     private BufferedImage FONTSHEET = null;
@@ -38,7 +37,6 @@ public class Font {
         loadFontArray();
     }
 
-
     public void setSize(int width, int height) {
         setWidth(width);
         setHeight(height);
@@ -54,14 +52,19 @@ public class Font {
         hLetter = FONTSHEET.getHeight() / h;
     }
 
-    public int getWidth() { return w; }
-    public int getHeight() { return h; }
+    public int getWidth() {
+        return w;
+    }
+
+    public int getHeight() {
+        return h;
+    }
 
     private BufferedImage loadFont(String file) {
         BufferedImage sprite = null;
         try {
             sprite = ImageIO.read(getClass().getClassLoader().getResourceAsStream(file));
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.out.println("ERROR: could not load file: " + file);
         }
 
@@ -71,8 +74,8 @@ public class Font {
     public void loadFontArray() {
         spriteArray = new BufferedImage[wLetter][hLetter];
 
-        for(int x = 0; x < wLetter; x++) {
-            for(int y = 0; y < hLetter; y++) {
+        for (int x = 0; x < wLetter; x++) {
+            for (int y = 0; y < hLetter; y++) {
                 spriteArray[x][y] = getLetter(x, y);
             }
         }
@@ -86,7 +89,7 @@ public class Font {
         return FONTSHEET.getSubimage(x * w, y * h, w, h);
     }
 
-    public BufferedImage getFont(char letter) {
+    public BufferedImage get(char letter) {
         int value = letter;
 
         int x = value % wLetter;

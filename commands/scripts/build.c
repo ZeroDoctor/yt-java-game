@@ -3,8 +3,9 @@
 
 int main() {
     printf("%s\n", "building...");
-    system("cd .. && javac -d bin -sourcepath res:src src/com/zerulus/game/GameLauncher.java");
-    printf("%s\n", "Done! - building");
+    // res:src on linux
+    system("cd .. && javac -d bin -sourcepath res;src src/com/zerulus/game/GameLauncher.java");
+    printf("%s\n\n", "Done! - building");
 
     return 0;
 }

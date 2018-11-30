@@ -23,6 +23,8 @@ public abstract class Block {
     public abstract boolean update(AABB p);
     public abstract boolean isInside(AABB p);
     public Vector2f getPos() { return pos; }
+    public int getWidth() { return w; }
+    public int getHeight() { return h; }
 
     public void render(Graphics2D g) {
         g.drawImage(img, (int) pos.getWorldVar().x, (int) pos.getWorldVar().y, w, h, null);

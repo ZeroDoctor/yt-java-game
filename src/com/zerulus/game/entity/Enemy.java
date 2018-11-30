@@ -84,14 +84,14 @@ public class Enemy extends Entity{
 
     public void update(Player player) {
         super.update();
-        move(player);
+        //move(player);
         if(!fallen) {
             if(!tc.collisionTile(dx, 0)) {
-                sense.getPos().x  += dx;
+                sense.getPos().x += dx;
                 pos.x += dx;
             }
             if(!tc.collisionTile(0, dy)) {
-                sense.getPos().y  += dy;
+                sense.getPos().y += dy;
                 pos.y += dy;
             }
         } else {
@@ -102,7 +102,6 @@ public class Enemy extends Entity{
     }
 
 
-    @Override
     public void render(Graphics2D g) {
         g.setColor(Color.green);
         g.drawRect((int) (pos.getWorldVar().x + bounds.getXOffset()), (int) (pos.getWorldVar().y + bounds.getYOffset()), (int) bounds.getWidth(), (int) bounds.getHeight());

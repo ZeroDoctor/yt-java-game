@@ -30,6 +30,10 @@ public abstract class Entity {
     protected boolean left;
     protected boolean attack;
     protected boolean fallen;
+	
+	public boolean xCol = false;
+	public boolean yCol = false;
+	
     protected int attackSpeed;
     protected int attackDuration;
 
@@ -63,14 +67,25 @@ public abstract class Entity {
     public void setSprite(Sprite sprite) {
         this.sprite = sprite;
     }
-
+	
+	public boolean getUp() { return up; }
+	public boolean getDown() { return down; }
+	public boolean getLeft() { return left; }
+	public boolean getRight() { return right; }
+	
     public void setFallen(boolean b) { fallen = b; }
     public void setSize(int i) { size = i; }
     public void setMaxSpeed(float f) { maxSpeed = f; }
     public void setAcc(float f) { acc = f; }
     public void setDeacc(float f) { deacc = f; }
 
+    public float getAcc() { return acc; }
+    public float getDeacc() { return deacc; }
+    public float getMaxSpeed() { return maxSpeed; }
+
     public AABB getBounds() { return bounds; }
+    public float getSpeedx() {return dx; }
+    public float getSpeedy() {return dy; }
 
     public int getSize() { return size; }
     public Animation getAnimation() { return ani; }

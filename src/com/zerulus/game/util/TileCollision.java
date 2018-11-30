@@ -11,6 +11,7 @@ public class TileCollision {
 
     public TileCollision(Entity e) {
         this.e = e;
+        
     }
 
     public boolean collisionTile(float ax, float ay) {
@@ -18,13 +19,13 @@ public class TileCollision {
 
             int xt = (int) ( (e.getBounds().getPos().x + ax) + (c % 2) * e.getBounds().getWidth() + e.getBounds().getXOffset()) / 64;
             int yt = (int) ( (e.getBounds().getPos().y + ay) + (c / 2) * e.getBounds().getHeight() + e.getBounds().getYOffset()) / 64;
-
-            if(TileMapObj.tmo_blocks.containsKey(String.valueOf(xt) + "," + String.valueOf(yt))) {
-                Block block = TileMapObj.tmo_blocks.get(String.valueOf(xt) + "," + String.valueOf(yt));
-                if(block instanceof HoleBlock) {
-                    return collisionHole(ax, ay, xt, yt, block);
-                }
-                return block.update(e.getBounds());
+            
+            if(TileMapObj.event_blocks[xt + (yt * TileMapObj.height)] instanceof Block) {
+            	Block block = TileMapObj.event_blocks[xt + (yt * TileMapObj.height)];
+            	if(block instanceof HoleBlock) {
+            		return collisionHole(ax, ay, xt, yt, block);
+            	}
+            	return block.update(e.getBounds());
             }
         }
 
@@ -40,8 +41,12 @@ public class TileCollision {
             return false;
         }
         else if((nextXt == yt + 1) || (nextXt == xt + 1) || (nextYt == yt - 1) || (nextXt == xt - 1)) {
-            if(TileMapObj.tmo_blocks.containsKey(String.valueOf(nextXt) + "," + String.valueOf(nextYt))){
-                if(e.getBounds().getPos().x > block.getPos().x) {
+            if(TileMapObj.event_blocks[nextXt + (nextYt * TileMapObj.height)] instanceof HoleBlock) {
+                Block nextblock = TileMapObj.event_blocks[nextXt + (nextYt * TileMapObj.height)];
+                if(e.getBounds().getPos().x + e.getBounds().getXOffset() > block.getPos().x
+                && e.getBounds().getPos().y + e.getBounds().getYOffset() > block.getPos().y
+                && nextblock.getWidth() + nextblock.getPos().x > e.getBounds().getWidth() + (e.getBounds().getPos().x + e.getBounds().getXOffset())
+                && nextblock.getHeight() + nextblock.getPos().y > e.getBounds().getHeight() + (e.getBounds().getPos().y + e.getBounds().getYOffset())) {
                     e.setFallen(true);
                 }
                 return false;

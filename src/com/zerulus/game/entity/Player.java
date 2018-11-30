@@ -83,11 +83,10 @@ public class Player extends Entity {
         pos.x = GamePanel.width / 2 - 32;
         PlayState.map.x = 0;
 
-        pos.y = GamePanel.height /2 - 32;
+        pos.y = GamePanel.height / 2 - 32;
         PlayState.map.y = 0;
 
         setAnimation(RIGHT, sprite.getSpriteArray(RIGHT), 10);
-
     }
 
     public void update(Enemy enemy) {
@@ -100,14 +99,22 @@ public class Player extends Entity {
         if(!fallen) {
             move();
             if(!tc.collisionTile(dx, 0)) {
-                PlayState.map.x += dx;
+                //PlayState.map.x += dx;
+				xCol = false;
                 pos.x += dx;
-            }
+            } else {
+				xCol = true;
+			}
             if(!tc.collisionTile(0, dy)) {
-                PlayState.map.y += dy;
+                //PlayState.map.y += dy;
+				yCol = false;
                 pos.y += dy;
-            }
+            } else {
+				yCol = true;
+			}
         } else {
+			xCol = true;
+			yCol = true;
             if(ani.hasPlayedOnce()) {
                 resetPosition();
                 dx = 0;
@@ -131,10 +138,7 @@ public class Player extends Entity {
     }
 
     public void input(MouseHandler mouse, KeyHandler key) {
-
-        if(mouse.getButton() == 1) {
-            System.out.println("Player: " + pos.x + ", " + pos.y);
-        }
+		
         if(!fallen) {
             if(key.up.down) {
                 up = true;

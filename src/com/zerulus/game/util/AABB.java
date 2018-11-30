@@ -9,21 +9,18 @@ public class AABB {
     private float w;
     private float h;
     private float r;
-    private int size;
-
+    
     public AABB(Vector2f pos, int w, int h) {
         this.pos = pos;
         this.w = w;
         this.h = h;
 
-        size = Math.max(w, h);
+        Math.max(w, h);
     }
 
     public AABB(Vector2f pos, int r) {
         this.pos = pos;
         this.r = r;
-
-        size = r;
     }
 
     public Vector2f getPos() { return pos; }
@@ -37,14 +34,12 @@ public class AABB {
         this.w = w;
         this.h = h;
 
-        size = Math.max(w, h);
+        Math.max(w, h);
     }
 
     public void setCircle(Vector2f pos, int r) {
         this.pos = pos;
         this.r = r;
-
-        size = r;
     }
 
     public void setWidth(float f) { w = f; }

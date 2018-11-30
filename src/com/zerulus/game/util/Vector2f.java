@@ -44,9 +44,22 @@ public class Vector2f {
         worldY = y;
     }
 
+
+    public static float getWorldVarX(float x) {
+        return x - worldX;
+    }
+
+    public static float getWorldVarY(float y) {
+        return y - worldY;
+    }
+
     public Vector2f getWorldVar() {
         return new Vector2f(x - worldX, y - worldY);
     }
+	
+	public Vector2f getCamVar() {
+		return new Vector2f(x + worldX, y + worldY);
+	}
 
     @Override
     public String toString() {
