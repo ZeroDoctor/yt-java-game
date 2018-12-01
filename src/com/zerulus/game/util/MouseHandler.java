@@ -9,12 +9,13 @@ import java.awt.event.MouseMotionListener;
 
 public class MouseHandler implements MouseListener, MouseMotionListener {
 
-    private static int mouseX = -1;
-    private static int mouseY = -1;
-    private static int mouseB = -1;
+    private int mouseX = -1;
+    private int mouseY = -1;
+    private int mouseB = -1;
 
     public MouseHandler(GamePanel game) {
         game.addMouseListener(this);
+        game.addMouseMotionListener(this);
     }
 
     public int getX() {
@@ -28,7 +29,6 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
     public int getButton() {
         return mouseB;
     }
-
 
     public void mouseClicked(MouseEvent e) {
 

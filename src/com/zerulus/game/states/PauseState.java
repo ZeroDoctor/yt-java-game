@@ -5,6 +5,7 @@ import com.zerulus.game.util.MouseHandler;
 import com.zerulus.game.util.Vector2f;
 import com.zerulus.game.graphics.Sprite;
 import com.zerulus.game.ui.Button;
+import com.zerulus.game.ui.ClickedEvent;
 import com.zerulus.game.GamePanel;
 
 import java.awt.Graphics2D;
@@ -23,7 +24,12 @@ public class PauseState extends GameState {
 
         btnPlay = new Button("RESUME", 32, 24, imgButton, 200, 75, new Vector2f(0, 0), true);
         btnExit = new Button("EXIT", 32, 24, imgButton, 200, 75, new Vector2f(0, 100), true);
-        
+
+        btnPlay.addEvent(new ClickedEvent() {
+            public void action(int mouseButton) {
+                System.exit(0);
+            }
+        });
     }
 
     @Override
@@ -33,7 +39,8 @@ public class PauseState extends GameState {
 
     @Override
     public void input(MouseHandler mouse, KeyHandler key) {
-
+        btnPlay.input(mouse, key);
+        btnExit.input(mouse, key);
     }
 
     @Override
