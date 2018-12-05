@@ -57,7 +57,7 @@ public class KeyHandler implements KeyListener{
         }
     }
 
-    public void update() {
+    public void tick() {
         for(int i = 0; i < keys.size(); i++) {
             keys.get(i).tick();
         }
@@ -68,26 +68,24 @@ public class KeyHandler implements KeyListener{
         if(e.getKeyCode() == KeyEvent.VK_S) down.toggle(pressed);
         if(e.getKeyCode() == KeyEvent.VK_A) left.toggle(pressed);
         if(e.getKeyCode() == KeyEvent.VK_D) right.toggle(pressed);
-        
-        if(e.getKeyCode() == KeyEvent.VK_UP) up.toggle(pressed);
-        if(e.getKeyCode() == KeyEvent.VK_DOWN) down.toggle(pressed);
-        if(e.getKeyCode() == KeyEvent.VK_LEFT) left.toggle(pressed);
-        if(e.getKeyCode() == KeyEvent.VK_RIGHT) right.toggle(pressed);
-
         if(e.getKeyCode() == KeyEvent.VK_SPACE) attack.toggle(pressed);
         if(e.getKeyCode() == KeyEvent.VK_E) menu.toggle(pressed);
         if(e.getKeyCode() == KeyEvent.VK_ENTER) enter.toggle(pressed);
         if(e.getKeyCode() == KeyEvent.VK_ESCAPE) escape.toggle(pressed);
     }
 
+
+    @Override
     public void keyTyped(KeyEvent e) {
         // do nothing
     }
 
+    @Override
     public void keyPressed(KeyEvent e) {
         toggle(e, true);
     }
 
+    @Override
     public void keyReleased(KeyEvent e) {
         toggle(e, false);
     }

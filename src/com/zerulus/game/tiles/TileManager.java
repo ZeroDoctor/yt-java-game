@@ -1,26 +1,22 @@
 package com.zerulus.game.tiles;
 
 import com.zerulus.game.graphics.Sprite;
+import com.zerulus.game.util.Vector2f;
 import com.zerulus.game.util.Camera;
-
 import java.awt.Graphics2D;
 import java.util.ArrayList;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
 import java.io.File;
 
 public class TileManager {
 
     public static ArrayList<TileMap> tm;
-
-    private Camera cam;
+    public Camera cam;
 
     public TileManager() {
         tm = new ArrayList<TileMap>();
@@ -28,23 +24,23 @@ public class TileManager {
 
     public TileManager(String path, Camera cam) {
         tm = new ArrayList<TileMap>();
-        this.cam = cam;
-        addTileMap(path, 64, 64);
+        addTileMap(path, 64, 64, cam);
     }
 
     public TileManager(String path, int blockWidth, int blockHeight, Camera cam) {
         tm = new ArrayList<TileMap>();
-        this.cam = cam;
-        addTileMap(path, blockWidth, blockHeight);
+        addTileMap(path, blockWidth, blockHeight, cam);
     }
 
-    private void addTileMap(String path, int blockWidth, int blockHeight) {
+    private void addTileMap(String path, int blockWidth, int blockHeight, Camera cam) {
+        this.cam = cam;
         String imagePath;
 
         int width = 0;
         int height = 0;
         int tileWidth;
         int tileHeight;
+        int tileCount;
         int tileColumns;
         int layers = 0;
         Sprite sprite;
@@ -64,6 +60,7 @@ public class TileManager {
             imagePath = eElement.getAttribute("name");
             tileWidth = Integer.parseInt(eElement.getAttribute("tilewidth"));
             tileHeight = Integer.parseInt(eElement.getAttribute("tileheight"));
+            tileCount = Integer.parseInt(eElement.getAttribute("tilecount"));
             tileColumns =  Integer.parseInt(eElement.getAttribute("columns"));
             sprite = new Sprite("tile/" + imagePath + ".png", tileWidth, tileHeight);
 
@@ -85,21 +82,21 @@ public class TileManager {
                 } else {
                     tm.add(new TileMapObj(data[i], sprite, width, height, blockWidth, blockHeight, tileColumns));
                 }
+
+                cam.setLimit(width * blockWidth, height * blockHeight);
+
             }
-			
-			cam.setLimit(width * blockWidth, height * blockHeight);
-			
         } catch(Exception e) {
-            System.out.println("ERROR - TILEMANAGER: can not read tilemap.xml");
+            System.out.println("ERROR - TILEMANAGER: can not read tilemap");
         }
     }
 
     public void render(Graphics2D g) {
+        if(cam == null)
+            return;
 
         for(int i = 0; i < tm.size(); i++) {
             tm.get(i).render(g, cam.getBounds());
         }
     }
-
-
 }

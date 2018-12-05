@@ -3,11 +3,10 @@ package com.zerulus.game;
 import javax.swing.JFrame;
 
 public class Window extends JFrame {
+    public static final long serialVersionUID = 1L;
 
-	private static final long serialVersionUID = 1L;
-
-	public Window(String title) {
-        setTitle(title);
+    public Window() {
+        setTitle("Your mom");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setContentPane(new GamePanel(1280, 720));
         setIgnoreRepaint(true);
@@ -15,4 +14,5 @@ public class Window extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
     }
+
 }

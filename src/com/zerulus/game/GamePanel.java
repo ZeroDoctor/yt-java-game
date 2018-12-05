@@ -1,18 +1,23 @@
 package com.zerulus.game;
 
-import com.zerulus.game.states.GameStateManager;
-import com.zerulus.game.util.KeyHandler;
-import com.zerulus.game.util.MouseHandler;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
-import java.awt.*;
-import java.awt.image.BufferedImage;
+
+import com.zerulus.game.states.GameStateManager;
+import com.zerulus.game.util.MouseHandler;
+import com.zerulus.game.util.KeyHandler;
+
 
 public class GamePanel extends JPanel implements Runnable {
 
-	private static final long serialVersionUID = 1L;
-	
-	public static int width;
+    public static final long serialVersionUID = 1L;
+
+    public static int width;
     public static int height;
     public static int oldFrameCount;
     public static int oldTickCount;
@@ -39,7 +44,7 @@ public class GamePanel extends JPanel implements Runnable {
     public void addNotify() {
         super.addNotify();
 
-        if(thread == null) {
+        if (thread == null) {
             thread = new Thread(this, "GameThread");
             thread.start();
         }
@@ -63,7 +68,7 @@ public class GamePanel extends JPanel implements Runnable {
         final double GAME_HERTZ = 64.0;
         final double TBU = 1000000000 / GAME_HERTZ; // Time Before Update
 
-        final int MUBR = 5; // Must Update before render
+        final int MUBR = 3; // Must Update before render
 
         double lastUpdateTime = System.nanoTime();
         double lastRenderTime;
@@ -78,12 +83,12 @@ public class GamePanel extends JPanel implements Runnable {
         int tickCount = 0;
         oldTickCount = 0;
 
-        while(running) {
+        while (running) {
 
             double now = System.nanoTime();
             int updateCount = 0;
-            while(((now - lastUpdateTime) > TBU) && (updateCount < MUBR)) {
-                update();
+            while (((now - lastUpdateTime) > TBU) && (updateCount < MUBR)) {
+                update(now);
                 input(mouse, key);
                 lastUpdateTime += TBU;
                 updateCount++;
@@ -91,7 +96,7 @@ public class GamePanel extends JPanel implements Runnable {
                 // (^^^^) We use this varible for the soul purpose of displaying it
             }
 
-            if(now - lastUpdateTime > TBU) {
+            if (now - lastUpdateTime > TBU) {
                 lastUpdateTime = now - TBU;
             }
 
@@ -102,13 +107,13 @@ public class GamePanel extends JPanel implements Runnable {
             frameCount++;
 
             int thisSecond = (int) (lastUpdateTime / 1000000000);
-            if(thisSecond > lastSecondTime) {
-                if(frameCount != oldFrameCount) {
+            if (thisSecond > lastSecondTime) {
+                if (frameCount != oldFrameCount) {
                     System.out.println("NEW SECOND " + thisSecond + " " + frameCount);
                     oldFrameCount = frameCount;
                 }
 
-                if(tickCount != oldTickCount) {
+                if (tickCount != oldTickCount) {
                     System.out.println("NEW SECOND (T) " + thisSecond + " " + tickCount);
                     oldTickCount = tickCount;
                 }
@@ -117,13 +122,13 @@ public class GamePanel extends JPanel implements Runnable {
                 lastSecondTime = thisSecond;
             }
 
-            while(now - lastRenderTime < TTBR && now - lastUpdateTime < TBU) {
+            while (now - lastRenderTime < TTBR && now - lastUpdateTime < TBU) {
                 Thread.yield();
 
                 try {
                     Thread.sleep(1);
-                } catch(Exception e) {
-                    System.out.println("WARNING: yielding thread");
+                } catch (Exception e) {
+                    System.out.println("ERROR: yielding thread");
                 }
 
                 now = System.nanoTime();
@@ -132,24 +137,23 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
-
-    public void update(){
-        gsm.update();
+    public void update(double time) {
+        gsm.update(time);
     }
 
     public void input(MouseHandler mouse, KeyHandler key) {
         gsm.input(mouse, key);
     }
 
-    public void render(){
-        if(g != null) {
+    public void render() {
+        if (g != null) {
             g.setColor(new Color(33, 30, 39));
-            g.fillRect(0,0, width, height);
+            g.fillRect(0, 0, width, height);
             gsm.render(g);
         }
     }
 
-    public void draw(){
+    public void draw() {
         Graphics g2 = (Graphics) this.getGraphics();
         g2.drawImage(img, 0, 0, width, height, null);
         g2.dispose();

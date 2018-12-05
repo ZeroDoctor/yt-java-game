@@ -1,7 +1,8 @@
 package com.zerulus.game.graphics;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+
+import javax.imageio.ImageIO;
 
 public class Font {
 
@@ -89,7 +90,7 @@ public class Font {
         return FONTSHEET.getSubimage(x * w, y * h, w, h);
     }
 
-    public BufferedImage get(char letter) {
+    public BufferedImage getLetter(char letter) {
         int value = letter;
 
         int x = value % wLetter;

@@ -1,11 +1,12 @@
 package com.zerulus.game.graphics;
 
-import com.zerulus.game.util.Vector2f;
-
-import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
+
+import com.zerulus.game.util.Vector2f;
 
 /**
  * Created by danie on 5/25/2017.
@@ -20,7 +21,7 @@ public class Sprite {
     private int wSprite;
     private int hSprite;
 
-    private static Font currentFont;
+    public static Font currentFont;
 
     public Sprite(String file) {
         w = TILE_SIZE;
@@ -43,7 +44,6 @@ public class Sprite {
 
         wSprite = SPRITESHEET.getWidth() / w;
         hSprite = SPRITESHEET.getHeight() / h;
-
         loadSpriteArray();
     }
 
@@ -99,15 +99,15 @@ public class Sprite {
         return SPRITESHEET.getSubimage(x * w, y * h, w, h);
     }
 
-    public BufferedImage getSprite(int x, int y, int width, int height) {
-        return SPRITESHEET.getSubimage(x * w, y * h, width, height);
+        public BufferedImage getSprite(int x, int y, int w, int h) {
+        return SPRITESHEET.getSubimage(x * w, y * h, w, h);
     }
 
     public BufferedImage[] getSpriteArray(int i) {
         return spriteArray[i];
     }
 
-    public BufferedImage[][] getSpriteArray2() {
+    public BufferedImage[][] getSpriteArray2(int i) {
         return spriteArray;
     }
 
@@ -151,7 +151,7 @@ public class Sprite {
 
         for (int i = 0; i < word.length(); i++) {
             if (word.charAt(i) != 32)
-                g.drawImage(f.get(word.charAt(i)), (int) x, (int) y, width, height, null);
+                g.drawImage(f.getLetter(word.charAt(i)), (int) x, (int) y, width, height, null);
 
             x += xOffset;
             y += yOffset;

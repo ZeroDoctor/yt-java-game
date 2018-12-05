@@ -1,5 +1,6 @@
 package com.zerulus.game.tiles;
 
+import java.util.HashMap;
 import java.awt.Graphics2D;
 
 import com.zerulus.game.graphics.Sprite;
@@ -13,22 +14,19 @@ public class TileMapObj extends TileMap {
 
     public static Block[] event_blocks;
 
-    // Didn't want to do it but I did
+    private int tileWidth;
+    private int tileHeight;
+
     public static int width;
     public static int height;
-	
-	private int tileWidth;
-	private int tileHeight;
 
     public TileMapObj(String data, Sprite sprite, int width, int height, int tileWidth, int tileHeight, int tileColumns) {
         Block tempBlock;
         event_blocks = new Block[width * height];
-		
-		System.out.println("Obj height: " + height);
-		
-		this.tileWidth = tileWidth;
-		this.tileHeight = tileHeight;
-		
+
+        this.tileWidth = tileWidth;
+        this.tileHeight = tileHeight;
+
         TileMapObj.width = width;
         TileMapObj.height = height;
 
@@ -46,19 +44,14 @@ public class TileMapObj extends TileMap {
         }
     }
 
-    public int getHeight() { return height; }
-    public int getWidth() { return width; }
-
-    public Block[] getArray() { return event_blocks; }
-	
-	public void render(Graphics2D g, AABB cam) {
-        int x = (int) ((cam.getPos().getCamVar().x) / tileWidth);
-		int y = (int) ((cam.getPos().getCamVar().y) / tileHeight);
-    	for(int i = x; i < x + (cam.getWidth() / tileWidth); i++) {
-			for(int j = y; j < y + (cam.getHeight() / tileHeight); j++) {
-				if(event_blocks[i + (j * height)] != null)
-					event_blocks[i + (j * height)].render(g);				
-			}
-    	}
+    public void render(Graphics2D g, AABB cam) {
+        int x = (int) ((cam.getPos().x) / tileWidth);
+        int y = (int) ((cam.getPos().y) / tileHeight);
+        for(int i = x; i < x + (cam.getWidth() / tileWidth); i++) {
+            for(int j = y; j < y + (cam.getHeight() / tileHeight); j++) {
+                if(event_blocks[i + (j * height)] != null)
+                    event_blocks[i + (j * height)].render(g);
+            }
+        }
     }
 }

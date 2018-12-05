@@ -32,10 +32,16 @@ public class GameStateManager {
 
         states = new GameState[4];
 
-        font = new Font("font/font.png",10, 10);
+        font = new Font("font/font.png", 10, 10);
+        Sprite.currentFont = font;
+
         ui = new Sprite("ui/ui.png", 64, 64);
 
         states[PLAY] = new PlayState(this);
+    }
+
+    public boolean getState(int state) {
+        return states[state] != null;
     }
 
     public void pop(int state) {
@@ -56,10 +62,8 @@ public class GameStateManager {
             states[PAUSE] = new PauseState(this);
         }
         if (state == GAMEOVER) {
-            states[GAMEOVER] =  new GameOverState(this);
+            states[GAMEOVER] = new GameOverState(this);
         }
-
-        onTopState = state;
     }
 
     public void addAndpop(int state) {
@@ -71,36 +75,28 @@ public class GameStateManager {
         add(state);
     }
 
-    public void update() {
-        Vector2f.setWorldVar(map.x, map.y);
-
+    public void update(double time) {
         for (int i = 0; i < states.length; i++) {
-            if(states[i] != null)
-                states[i].update();
-        }
-    }
-
-    public void input(MouseHandler mouse, KeyHandler key) {
-        key.escape.tick();
-        
-        for (int i = 0; i < states.length; i++) {
-            if(states[i] != null)
-                states[i].input(mouse, key);
-        }
-        
-        if (key.escape.clicked) {
-            if(states[PAUSE] != null) {
-                pop(GameStateManager.PAUSE);
-            } else {
-                add(GameStateManager.PAUSE);
+            if (states[i] != null) {
+                states[i].update(time);
             }
         }
     }
 
+    public void input(MouseHandler mouse, KeyHandler key) {
+        
+        for (int i = 0; i < states.length; i++) {
+            if (states[i] != null) {
+                states[i].input(mouse, key);
+            }
+        }        
+    }
+
     public void render(Graphics2D g) {
         for (int i = 0; i < states.length; i++) {
-            if(states[i] != null)
+            if (states[i] != null) {
                 states[i].render(g);
+            }
         }
     }
 

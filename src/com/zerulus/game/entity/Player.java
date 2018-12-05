@@ -7,14 +7,17 @@ import com.zerulus.game.util.KeyHandler;
 import com.zerulus.game.util.MouseHandler;
 import com.zerulus.game.util.Vector2f;
 import com.zerulus.game.states.PlayState;
+import com.zerulus.game.util.Camera;
 
 import java.awt.*;
 
 public class Player extends Entity {
 
+    private Camera cam;
 
-    public Player(Sprite sprite, Vector2f orgin, int size) {
+    public Player(Camera cam, Sprite sprite, Vector2f orgin, int size) {
         super(sprite, orgin, size);
+        this.cam = cam;
         acc = 2f;
         maxSpeed = 4f;
         bounds.setWidth(42);
@@ -82,17 +85,22 @@ public class Player extends Entity {
         System.out.println("Reseting Player... ");
         pos.x = GamePanel.width / 2 - 32;
         PlayState.map.x = 0;
+        cam.getBounds().getPos().x = 0;
 
-        pos.y = GamePanel.height / 2 - 32;
+        pos.y = GamePanel.height /2 - 32;
         PlayState.map.y = 0;
+        cam.getBounds().getPos().y = 0;
 
         setAnimation(RIGHT, sprite.getSpriteArray(RIGHT), 10);
+
     }
 
-    public void update(Enemy enemy) {
+    public void update(Enemy enemy, double time) {
         super.update();
 
-        if(attack && hitBounds.collides(enemy.getBounds())) {
+        attacking = isAttacking(time);
+
+        if(attacking && hitBounds.collides(enemy.getBounds())) {
             System.out.println("I've been hit!");
         }
 
@@ -100,21 +108,21 @@ public class Player extends Entity {
             move();
             if(!tc.collisionTile(dx, 0)) {
                 //PlayState.map.x += dx;
-				xCol = false;
                 pos.x += dx;
+                xCol = false;
             } else {
-				xCol = true;
-			}
+                xCol = true;
+            }
             if(!tc.collisionTile(0, dy)) {
                 //PlayState.map.y += dy;
-				yCol = false;
                 pos.y += dy;
+                yCol = false;
             } else {
-				yCol = true;
-			}
+                yCol = true;
+            }
         } else {
-			xCol = true;
-			yCol = true;
+            xCol = true;
+            yCol = true;
             if(ani.hasPlayedOnce()) {
                 resetPosition();
                 dx = 0;
@@ -138,7 +146,7 @@ public class Player extends Entity {
     }
 
     public void input(MouseHandler mouse, KeyHandler key) {
-		
+
         if(!fallen) {
             if(key.up.down) {
                 up = true;
@@ -161,10 +169,23 @@ public class Player extends Entity {
                 right = false;
             }
 
-            if(key.attack.down) {
+            if(key.attack.down && canAttack) {
                 attack = true;
+                attacktime = System.nanoTime();
             } else {
-                attack = false;
+                if(!attacking) {
+                    attack = false;
+                }
+            }
+
+            if(up && down) {
+                up = false;
+                down = false;
+            }
+
+            if(right && left) {
+                right = false;
+                left = false;
             }
         } else {
             up = false;

@@ -2,6 +2,7 @@ package com.zerulus.game.tiles.blocks;
 
 import java.awt.image.BufferedImage;
 import java.awt.Graphics2D;
+import java.awt.Color;
 
 import com.zerulus.game.util.Vector2f;
 import com.zerulus.game.util.AABB;
