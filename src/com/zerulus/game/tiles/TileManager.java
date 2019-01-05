@@ -40,7 +40,6 @@ public class TileManager {
         int height = 0;
         int tileWidth;
         int tileHeight;
-        int tileCount;
         int tileColumns;
         int layers = 0;
         Sprite sprite;
@@ -60,7 +59,6 @@ public class TileManager {
             imagePath = eElement.getAttribute("name");
             tileWidth = Integer.parseInt(eElement.getAttribute("tilewidth"));
             tileHeight = Integer.parseInt(eElement.getAttribute("tileheight"));
-            tileCount = Integer.parseInt(eElement.getAttribute("tilecount"));
             tileColumns =  Integer.parseInt(eElement.getAttribute("columns"));
             sprite = new Sprite("tile/" + imagePath + ".png", tileWidth, tileHeight);
 

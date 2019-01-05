@@ -1,5 +1,6 @@
 package com.zerulus.game.graphics;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
@@ -13,6 +14,8 @@ public class Font {
     public int h;
     private int wLetter;
     private int hLetter;
+    private Color color = new Color(0, 0, 0);
+    private Color defaultColor = new Color(0, 0, 0);
 
     public Font(String file) {
         w = TILE_SIZE;
@@ -36,6 +39,15 @@ public class Font {
         wLetter = FONTSHEET.getWidth() / w;
         hLetter = FONTSHEET.getHeight() / h;
         loadFontArray();
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public void setDefaultColor(Color defaultColor) {
+        this.defaultColor = defaultColor;
+        this.color = defaultColor;
     }
 
     public void setSize(int width, int height) {
@@ -86,8 +98,32 @@ public class Font {
         return FONTSHEET;
     }
 
+    public String toHexString(Color colour) {
+        String hexColour = Integer.toHexString(colour.getRGB() & 0xffffff);
+        if (hexColour.length() < 6) {
+            hexColour = "000000".substring(0, 6 - hexColour.length()) + hexColour;
+        }
+
+        return "#" + hexColour;
+    }
+
     public BufferedImage getLetter(int x, int y) {
-        return FONTSHEET.getSubimage(x * w, y * h, w, h);
+        BufferedImage img = FONTSHEET.getSubimage(x * w, y * h, w, h);
+        if(color == defaultColor) {
+            return img;
+        }
+
+        int[] p = new int[w * h];
+        for(int i = 0; i < w; i++) {
+            for(int j = 0; j < h; j++) {
+                p[i+j] = img.getRGB(i, j);
+                if(p[i+j] == defaultColor.getRGB()) {
+                    img.setRGB(i, j, color.getRGB());
+                }
+            }
+        }
+
+        return img;
     }
 
     public BufferedImage getLetter(char letter) {

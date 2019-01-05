@@ -19,8 +19,8 @@ public class Camera {
 
     private float dx;
     private float dy;
-    private float maxSpeed = 4f;
-    private float acc = 1f;
+    private float maxSpeed = 8f;
+    private float acc = 3f;
     private float deacc = 0.3f;
 
     private int widthLimit;
@@ -37,30 +37,41 @@ public class Camera {
         this.heightLimit = heightLimit;
     }
 
+    public Entity getTarget() { return e; }
     public AABB getBounds() {
         return collisionCam;
     }
 
     public void update() {
         move();
-        if (!e.xCol) {
-            if ((e.getBounds().getPos().getWorldVar().x + e.getDx()) < Vector2f
-                    .getWorldVarX(widthLimit - collisionCam.getWidth() / 2) - 64
-                    && (e.getBounds().getPos().getWorldVar().x + e.getDx()) > Vector2f
-                            .getWorldVarX(GamePanel.width / 2 - 64)) {
+        if(e != null) {
+            if (!e.xCol) {
+                if ((e.getBounds().getPos().getWorldVar().x + e.getDx()) < Vector2f.getWorldVarX(widthLimit - collisionCam.getWidth() / 2) - 64
+                    && (e.getBounds().getPos().getWorldVar().x + e.getDx()) > Vector2f.getWorldVarX(GamePanel.width / 2 - 64)) {
+                    PlayState.map.x += dx;
+                    collisionCam.getPos().x += dx;
+                    //bounds.getPos().x += dx;
+                }
+            }
+            if (!e.yCol) {
+                if ((e.getBounds().getPos().getWorldVar().y + e.getDy()) < Vector2f.getWorldVarY(heightLimit - collisionCam.getHeight() / 2) - 64
+                    && (e.getBounds().getPos().getWorldVar().y + e.getDy()) > Vector2f.getWorldVarY(GamePanel.height / 2 - 64)) {
+                    PlayState.map.y += dy;
+                    collisionCam.getPos().y += dy;
+                //bounds.getPos().y += dy;
+                }
+            }
+        } else {
+            if(collisionCam.getPos().x + dx > 0
+            && collisionCam.getPos().getWorldVar().x + dx < Vector2f.getWorldVarX(widthLimit - collisionCam.getWidth()) - 64) {
                 PlayState.map.x += dx;
                 collisionCam.getPos().x += dx;
-                //bounds.getPos().x += dx;
             }
-        }
-        if (!e.yCol) {
-            if ((e.getBounds().getPos().getWorldVar().y + e.getDy()) < Vector2f
-                    .getWorldVarY(heightLimit - collisionCam.getHeight() / 2) - 64
-                    && (e.getBounds().getPos().getWorldVar().y + e.getDy()) > Vector2f
-                            .getWorldVarY(GamePanel.height / 2 - 64)) {
+
+            if(collisionCam.getPos().y + dy > 0 
+            && collisionCam.getPos().getWorldVar().y + dy < Vector2f.getWorldVarY(heightLimit - collisionCam.getHeight()) - 64) {
                 PlayState.map.y += dy;
                 collisionCam.getPos().y += dy;
-               //bounds.getPos().y += dy;
             }
         }
     }
@@ -122,9 +133,18 @@ public class Camera {
 
     public void target(Entity e) {
         this.e = e;
-        deacc = e.getDeacc();
-        maxSpeed = e.getMaxSpeed();
+        if(e != null) {
+            acc = e.getAcc();
+            deacc = e.getDeacc();
+            maxSpeed = e.getMaxSpeed();
+        } else {
+            acc = 3;
+            deacc = 0.3f;
+            maxSpeed = 8;
+        }
     }
+
+    public void setMaxSpeed(int maxSpeed) {this.maxSpeed = maxSpeed; }
 
     public void input(MouseHandler mouse, KeyHandler key) {
 
@@ -189,10 +209,10 @@ public class Camera {
         g.drawRect((int) collisionCam.getPos().getWorldVar().x, (int) collisionCam.getPos().getWorldVar().y, (int) collisionCam.getWidth(),
                 (int) collisionCam.getHeight()); */
 
-        /*
-         * g.setColor(Color.magenta); g.drawLine(GamePanel.width / 2, 0, GamePanel.width
-         * / 2, GamePanel.height); g.drawLine(0, GamePanel.height / 2, GamePanel.width,
-         * GamePanel.height / 2);
-         */
+        
+         /* g.setColor(Color.magenta); 
+         g.drawLine(GamePanel.width / 2, 0, GamePanel.width / 2, GamePanel.height); 
+         g.drawLine(0, GamePanel.height / 2, GamePanel.width,GamePanel.height / 2); */
+        
     }
 }

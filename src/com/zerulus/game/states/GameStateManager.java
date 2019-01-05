@@ -4,10 +4,13 @@ import com.zerulus.game.GamePanel;
 import com.zerulus.game.util.KeyHandler;
 import com.zerulus.game.util.MouseHandler;
 import com.zerulus.game.util.Vector2f;
+import com.zerulus.game.util.AABB;
+import com.zerulus.game.util.Camera;
 import com.zerulus.game.graphics.Font;
 import com.zerulus.game.graphics.Sprite;
 
 import java.awt.Graphics2D;
+import java.awt.Color;
 import java.util.ArrayList;
 
 public class GameStateManager {
@@ -16,32 +19,39 @@ public class GameStateManager {
 
     public static Vector2f map;
 
-    public static final int PLAY = 0;
-    public static final int MENU = 1;
+    public static final int MENU = 0;
+    public static final int PLAY = 1;
     public static final int PAUSE = 2;
     public static final int GAMEOVER = 3;
-
-    public int onTopState = 0;
+    public static final int EDIT = 4;
 
     public static Font font;
     public static Sprite ui;
+    public static Camera cam;
 
     public GameStateManager() {
         map = new Vector2f(GamePanel.width, GamePanel.height);
         Vector2f.setWorldVar(map.x, map.y);
 
-        states = new GameState[4];
+        states = new GameState[5];
 
         font = new Font("font/font.png", 10, 10);
         Sprite.currentFont = font;
+        font.setDefaultColor(Color.decode("0xffffff"));
 
         ui = new Sprite("ui/ui.png", 64, 64);
 
-        states[PLAY] = new PlayState(this);
+        cam = new Camera(new AABB(new Vector2f(0, 0), GamePanel.width + 64, GamePanel.height + 64));
+
+        states[PLAY] = new PlayState(this, cam);
     }
 
-    public boolean getState(int state) {
+    public boolean isStateActive(int state) {
         return states[state] != null;
+    }
+
+    public GameState getState(int state) {
+        return states[state];
     }
 
     public void pop(int state) {
@@ -53,16 +63,22 @@ public class GameStateManager {
             return;
 
         if (state == PLAY) {
-            states[PLAY] = new PlayState(this);
+            cam = new Camera(new AABB(new Vector2f(0, 0), GamePanel.width + 64, GamePanel.height + 64));
+            states[PLAY] = new PlayState(this, cam);
         }
-        if (state == MENU) {
+        else if (state == MENU) {
             states[MENU] = new MenuState(this);
         }
-        if (state == PAUSE) {
+        else if (state == PAUSE) {
             states[PAUSE] = new PauseState(this);
         }
-        if (state == GAMEOVER) {
+        else if (state == GAMEOVER) {
             states[GAMEOVER] = new GameOverState(this);
+        }
+        else if (state == EDIT) {
+            if(states[PLAY] != null) {
+                states[EDIT] = new EditState(this, cam);
+            }
         }
     }
 

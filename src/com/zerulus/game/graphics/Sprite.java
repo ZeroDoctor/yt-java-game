@@ -7,10 +7,7 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 import com.zerulus.game.util.Vector2f;
-
-/**
- * Created by danie on 5/25/2017.
- */
+ 
 public class Sprite {
 
     private BufferedImage SPRITESHEET = null;

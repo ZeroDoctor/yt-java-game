@@ -9,76 +9,38 @@ import com.zerulus.game.util.Vector2f;
 import com.zerulus.game.states.PlayState;
 import com.zerulus.game.util.Camera;
 
-import java.awt.*;
+import java.util.ArrayList;
+import java.awt.Color;
+import java.awt.Graphics2D;
 
 public class Player extends Entity {
 
     private Camera cam;
+    private ArrayList<Enemy> enemy;
 
-    public Player(Camera cam, Sprite sprite, Vector2f orgin, int size) {
-        super(sprite, orgin, size);
+    public Player(Camera cam, Sprite sprite, Vector2f origin, int size) {
+        super(sprite, origin, size);
         this.cam = cam;
-        acc = 2f;
-        maxSpeed = 4f;
         bounds.setWidth(42);
         bounds.setHeight(20);
         bounds.setXOffset(12);
         bounds.setYOffset(40);
+
+        hitBounds.setWidth(48);
+        hitBounds.setHeight(48);
+
+        ani.setNumFrames(4, UP);
+        ani.setNumFrames(4, DOWN);
+        ani.setNumFrames(4, ATTACK + RIGHT);
+        ani.setNumFrames(4, ATTACK + LEFT);
+        ani.setNumFrames(4, ATTACK + UP);
+        ani.setNumFrames(4, ATTACK + DOWN);
+
+        enemy = new ArrayList<Enemy>();
     }
 
-    private void move() {
-        if(up) {
-            dy -= acc;
-            if(dy < -maxSpeed) {
-                dy = -maxSpeed;
-            }
-        } else {
-            if(dy < 0) {
-                dy += deacc;
-                if(dy > 0) {
-                    dy = 0;
-                }
-            }
-        }
-        if(down) {
-            dy += acc;
-            if(dy > maxSpeed) {
-                dy = maxSpeed;
-            }
-        } else {
-            if(dy > 0) {
-                dy -= deacc;
-                if(dy < 0) {
-                    dy = 0;
-                }
-            }
-        }
-        if(left) {
-            dx -= acc;
-            if(dx < -maxSpeed) {
-                dx = -maxSpeed;
-            }
-        } else {
-            if(dx < 0) {
-                dx += deacc;
-                if(dx > 0) {
-                    dx = 0;
-                }
-            }
-        }
-        if(right) {
-            dx += acc;
-            if(dx > maxSpeed) {
-                dx = maxSpeed;
-            }
-        } else {
-            if(dx > 0) {
-                dx -= deacc;
-                if(dx < 0) {
-                    dx = 0;
-                }
-            }
-        }
+    public void setTargetEnemy(Enemy enemy) { 
+        this.enemy.add(enemy);
     }
 
     private void resetPosition() {
@@ -95,13 +57,15 @@ public class Player extends Entity {
 
     }
 
-    public void update(Enemy enemy, double time) {
-        super.update();
+    public void update(double time) {
+        super.update(time);
 
         attacking = isAttacking(time);
-
-        if(attacking && hitBounds.collides(enemy.getBounds())) {
-            System.out.println("I've been hit!");
+        for(int i = 0; i < enemy.size(); i++) {
+            if(attacking) {
+                enemy.get(i).setHealth(enemy.get(i).getHealth() - damage, force);
+                enemy.remove(i);
+            }
         }
 
         if(!fallen) {
@@ -134,8 +98,8 @@ public class Player extends Entity {
 
     @Override
     public void render(Graphics2D g) {
-        g.setColor(Color.green);
-        g.drawRect((int) (pos.getWorldVar().x + bounds.getXOffset()), (int) (pos.getWorldVar().y + bounds.getYOffset()), (int) bounds.getWidth(), (int) bounds.getHeight());
+        /* g.setColor(Color.green);
+        g.drawRect((int) (pos.getWorldVar().x + bounds.getXOffset()), (int) (pos.getWorldVar().y + bounds.getYOffset()), (int) bounds.getWidth(), (int) bounds.getHeight()); */
 
         if(attack) {
             g.setColor(Color.red);
@@ -176,6 +140,14 @@ public class Player extends Entity {
                 if(!attacking) {
                     attack = false;
                 }
+            }
+
+            if(key.shift.down) {
+                maxSpeed = 8;
+                cam.setMaxSpeed(7);
+            } else {
+                maxSpeed = 4;
+                cam.setMaxSpeed(4);
             }
 
             if(up && down) {

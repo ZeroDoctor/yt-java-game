@@ -19,7 +19,6 @@ public class Button {
     private BufferedImage image;
     private int iWidth;
     private int iHeight;
-    private Vector2f offset;
 
     private Vector2f iPos;
     private Vector2f lbPos;
@@ -27,27 +26,47 @@ public class Button {
     private AABB bounds;
     private boolean hovering = false;
     private int hoverSize;
-    private ArrayList<ClickEvent> events;
+    private ArrayList<ClickedEvent> events;
     private boolean clicked = false;
     private boolean canHover = true;
 
-    public Button(String label, int lbWidth, int lbHeight, BufferedImage image, int iWidth, int iHeight,
-            Vector2f offset, boolean centered) {
+    public Button(String label, int lbWidth, int lbHeight, BufferedImage image, int iWidth, int iHeight) {
         this.label = label;
         this.lbWidth = lbWidth;
         this.lbHeight = lbHeight;
         this.image = image;
         this.iWidth = iWidth;
         this.iHeight = iHeight;
-        this.offset = offset;
         this.hoverSize = 20;
 
-        if(centered) {
-            iPos = new Vector2f((GamePanel.width / 2 - iWidth / 2 + offset.x) , (GamePanel.height / 2 - iHeight / 2 + offset.y));
-            lbPos = new Vector2f((GamePanel.width / 2 - ((label.length() - 1) * lbWidth) / 2), (GamePanel.height / 2 - (lbHeight + 5) / 2) + offset.y);
-        }
+        iPos = new Vector2f((GamePanel.width / 2 - iWidth / 2) , (GamePanel.height / 2 - iHeight / 2));
+        lbPos = new Vector2f((iPos.x + iWidth / 2 + lbWidth / 2) - ((label.length()) * lbWidth / 2), iPos.y + iHeight / 2 - lbHeight / 2 - 4);
+    
         this.bounds = new AABB(iPos, iWidth, iHeight);
-        events = new ArrayList<ClickEvent>();
+
+        events = new ArrayList<ClickedEvent>();
+    }
+
+    public Button(String label, int lbWidth, int lbHeight, BufferedImage image, int iWidth, int iHeight, Vector2f offset) {
+        this(label, lbWidth, lbHeight, image, iWidth, iHeight);
+
+        iPos = new Vector2f((GamePanel.width / 2 - iWidth / 2 + offset.x) , (GamePanel.height / 2 - iHeight / 2 + offset.y));
+        lbPos = new Vector2f((iPos.x + iWidth / 2 + lbWidth / 2) - ((label.length()) * lbWidth / 2), iPos.y + iHeight / 2 - lbHeight / 2 - 4);
+    
+        this.bounds = new AABB(iPos, iWidth, iHeight);
+    }
+
+    public Button(String label, int lbWidth, int lbHeight, BufferedImage image, Vector2f iPos, int iWidth, int iHeight) {
+        this(label, new Vector2f((iPos.x + iWidth / 2 + lbWidth / 2) - ((label.length()) * lbWidth / 2), iPos.y + iHeight / 2 - lbHeight / 2 - 4), lbWidth, lbHeight, image, iPos, iWidth, iHeight);
+    }
+
+    public Button(String label, Vector2f lbPos, int lbWidth, int lbHeight, BufferedImage image, Vector2f iPos, int iWidth, int iHeight) {
+        this(label, lbWidth, lbHeight, image, iWidth, iHeight);
+
+        this.iPos = iPos;
+        this.lbPos = lbPos;
+
+        this.bounds = new AABB(iPos, iWidth, iHeight);
     }
 
     public void setHoverSize(int size) {
@@ -58,7 +77,7 @@ public class Button {
         this.canHover = b;
     }
 
-    public void addEvent(ClickEvent e) {
+    public void addEvent(ClickedEvent e) {
         events.add(e);
     }
 

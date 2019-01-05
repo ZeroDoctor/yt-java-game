@@ -1,11 +1,14 @@
 package com.zerulus.game;
 
+import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import com.zerulus.game.states.GameStateManager;
@@ -25,6 +28,7 @@ public class GamePanel extends JPanel implements Runnable {
     private Thread thread;
     private boolean running = false;
 
+    private BufferStrategy bs;
     private BufferedImage img;
     private Graphics2D g;
 
@@ -33,9 +37,10 @@ public class GamePanel extends JPanel implements Runnable {
 
     private GameStateManager gsm;
 
-    public GamePanel(int width, int height) {
+    public GamePanel(BufferStrategy bs, int width, int height) {
         GamePanel.width = width;
         GamePanel.height = height;
+        this.bs = bs;
         setPreferredSize(new Dimension(width, height));
         setFocusable(true);
         requestFocus();
@@ -154,9 +159,13 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void draw() {
-        Graphics g2 = (Graphics) this.getGraphics();
-        g2.drawImage(img, 0, 0, width, height, null);
-        g2.dispose();
+        do {
+            Graphics g2 = (Graphics) bs.getDrawGraphics();
+            g2.drawImage(img, 8, 31, width, height, null);
+            g2.dispose();
+            bs.show();
+        } while(bs.contentsLost());
+        
     }
 
 }

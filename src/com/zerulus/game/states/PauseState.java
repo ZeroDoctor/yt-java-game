@@ -19,8 +19,8 @@ public class PauseState extends GameState {
         imgButton = GameStateManager.ui.getSprite(0, 0, 128, 64);
 
 
-        btnResume = new Button("RESUME", 32, 24, imgButton, 200, 75, new Vector2f(0, -50), true);
-        btnExit = new Button("EXIT", 32, 24, imgButton, 200, 75, new Vector2f(0, 50), true);
+        btnResume = new Button("RESUME", 32, 24, imgButton, 200, 75, new Vector2f(0, -50));
+        btnExit = new Button("EXIT", 32, 24, imgButton, 200, 75, new Vector2f(0, 50));
         
         btnResume.addEvent(e -> {
             gsm.pop(GameStateManager.PAUSE);
@@ -33,8 +33,7 @@ public class PauseState extends GameState {
 
     @Override
     public void update(double time) {
-        btnResume.update();
-        btnExit.update();
+
     }
 
     @Override
