@@ -2,32 +2,38 @@ package com.zerulus.game.entity;
 
 
 import com.zerulus.game.GamePanel;
+import com.zerulus.game.graphics.SpriteSheet;
+import com.zerulus.game.graphics.Screen;
 import com.zerulus.game.graphics.Sprite;
 import com.zerulus.game.util.KeyHandler;
 import com.zerulus.game.util.MouseHandler;
 import com.zerulus.game.util.Vector2f;
 import com.zerulus.game.states.PlayState;
+import com.zerulus.game.tiles.TileManager;
+import com.zerulus.game.tiles.blocks.NormBlock;
 import com.zerulus.game.util.Camera;
 
 import java.util.ArrayList;
 import java.awt.Color;
-import java.awt.Graphics2D;
 
 public class Player extends Entity {
 
     private Camera cam;
     private ArrayList<Enemy> enemy;
+    private TileManager tm;
 
-    public Player(Camera cam, Sprite sprite, Vector2f origin, int size) {
+    public Player(Camera cam, SpriteSheet sprite, Vector2f origin, int size, TileManager tm) {
         super(sprite, origin, size);
         this.cam = cam;
+        this.tm = tm;
+
         bounds.setWidth(42);
         bounds.setHeight(20);
         bounds.setXOffset(12);
         bounds.setYOffset(40);
 
-        hitBounds.setWidth(48);
-        hitBounds.setHeight(48);
+        hitBounds.setWidth(42);
+        hitBounds.setHeight(42);
 
         ani.setNumFrames(4, UP);
         ani.setNumFrames(4, DOWN);
@@ -37,6 +43,15 @@ public class Player extends Entity {
         ani.setNumFrames(4, ATTACK + DOWN);
 
         enemy = new ArrayList<Enemy>();
+
+        for(int i = 0; i < sprite.getSpriteArray2().length; i++) {
+            for(int j = 0; j < sprite.getSpriteArray2()[i].length; j++) {
+                sprite.getSpriteArray2()[i][j].setEffect(Sprite.effect.NEGATIVE);
+                sprite.getSpriteArray2()[i][j].saveColors();
+            }
+        }
+
+        hasIdle = false;
     }
 
     public void setTargetEnemy(Enemy enemy) { 
@@ -63,7 +78,7 @@ public class Player extends Entity {
         attacking = isAttacking(time);
         for(int i = 0; i < enemy.size(); i++) {
             if(attacking) {
-                enemy.get(i).setHealth(enemy.get(i).getHealth() - damage, force);
+                enemy.get(i).setHealth(enemy.get(i).getHealth() - damage, force * getDirection(), currentDirection == UP || currentDirection == DOWN);
                 enemy.remove(i);
             }
         }
@@ -94,19 +109,37 @@ public class Player extends Entity {
                 fallen = false;
             }
         }
+
+        NormBlock block = tm.getNormalTile(tc.getTile());
+        if(block != null) {
+            block.getImage().setEffect(Sprite.effect.NEGATIVE);
+        }
     }
 
     @Override
-    public void render(Graphics2D g) {
+    public void render(Screen s) {
         /* g.setColor(Color.green);
         g.drawRect((int) (pos.getWorldVar().x + bounds.getXOffset()), (int) (pos.getWorldVar().y + bounds.getYOffset()), (int) bounds.getWidth(), (int) bounds.getHeight()); */
 
         if(attack) {
-            g.setColor(Color.red);
-            g.drawRect((int) (hitBounds.getPos().getWorldVar().x + hitBounds.getXOffset()), (int) (hitBounds.getPos().getWorldVar().y + hitBounds.getYOffset()), (int) hitBounds.getWidth(), (int) hitBounds.getHeight());
+            s.drawRect((int) (hitBounds.getPos().getWorldVar().x + hitBounds.getXOffset()), (int) (hitBounds.getPos().getWorldVar().y + hitBounds.getYOffset()), (int) hitBounds.getWidth(), (int) hitBounds.getHeight(), Color.red.getRGB());
         }
 
-        g.drawImage(ani.getImage(), (int) (pos.getWorldVar().x), (int) (pos.getWorldVar().y), size, size, null);
+        if(isInvincible) {
+            if(GamePanel.tickCount % 30 >= 15) {
+                ani.getImage().setEffect(Sprite.effect.REDISH);
+            } else {
+                ani.getImage().restoreColors();
+            }
+        } else {
+            ani.getImage().restoreColors();
+        }
+
+        if(useRight && left) {
+            s.drawImage(ani.getImage(), (int) (pos.getWorldVar().x) + size, (int) (pos.getWorldVar().y), -size, size, null);
+        } else {
+            s.drawImage(ani.getImage(), (int) (pos.getWorldVar().x), (int) (pos.getWorldVar().y), size, size, null);
+        }
     }
 
     public void input(MouseHandler mouse, KeyHandler key) {

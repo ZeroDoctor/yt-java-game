@@ -1,16 +1,14 @@
 package com.zerulus.game;
 
-import java.awt.Canvas;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import com.zerulus.game.graphics.Screen;
 import com.zerulus.game.states.GameStateManager;
 import com.zerulus.game.util.MouseHandler;
 import com.zerulus.game.util.KeyHandler;
@@ -24,18 +22,21 @@ public class GamePanel extends JPanel implements Runnable {
     public static int height;
     public static int oldFrameCount;
     public static int oldTickCount;
+    public static int tickCount;
 
     private Thread thread;
     private boolean running = false;
 
     private BufferStrategy bs;
     private BufferedImage img;
-    private Graphics2D g;
 
     private MouseHandler mouse;
     private KeyHandler key;
 
     private GameStateManager gsm;
+    
+    private Screen screen;
+    private int[] pixels;
 
     public GamePanel(BufferStrategy bs, int width, int height) {
         GamePanel.width = width;
@@ -59,12 +60,15 @@ public class GamePanel extends JPanel implements Runnable {
         running = true;
 
         img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        g = (Graphics2D) img.getGraphics();
+        pixels = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
+        //g = (Graphics2D) img.getGraphics();
 
         mouse = new MouseHandler(this);
         key = new KeyHandler(this);
 
+        screen = new Screen(width, height);
         gsm = new GameStateManager();
+        
     }
 
     public void run() {
@@ -85,7 +89,7 @@ public class GamePanel extends JPanel implements Runnable {
         int lastSecondTime = (int) (lastUpdateTime / 1000000000);
         oldFrameCount = 0;
 
-        int tickCount = 0;
+        tickCount = 0;
         oldTickCount = 0;
 
         while (running) {
@@ -108,6 +112,7 @@ public class GamePanel extends JPanel implements Runnable {
             input(mouse, key);
             render();
             draw();
+            
             lastRenderTime = now;
             frameCount++;
 
@@ -151,11 +156,16 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void render() {
-        if (g != null) {
-            g.setColor(new Color(33, 30, 39));
-            g.fillRect(0, 0, width, height);
-            gsm.render(g);
-        }
+            screen.clear();
+            //g.setColor(new Color(33, 30, 39));
+            //g.fillRect(0, 0, width, height);
+
+            gsm.render(screen);
+
+            for(int i = 0; i < pixels.length; i++) {
+                pixels[i] = screen.pixels[i];
+            }
+        
     }
 
     public void draw() {

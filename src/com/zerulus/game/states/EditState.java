@@ -2,8 +2,9 @@ package com.zerulus.game.states;
 
 import com.zerulus.game.GamePanel;
 import com.zerulus.game.entity.GameObject;
-import com.zerulus.game.entity.Enemy;
-import com.zerulus.game.graphics.Sprite;
+import com.zerulus.game.entity.enemy.TinyMon;
+import com.zerulus.game.graphics.Screen;
+import com.zerulus.game.graphics.SpriteSheet;
 import com.zerulus.game.util.KeyHandler;
 import com.zerulus.game.util.MouseHandler;
 import com.zerulus.game.util.Vector2f;
@@ -11,27 +12,44 @@ import com.zerulus.game.util.Camera;
 import com.zerulus.game.ui.Button;
 
 import java.awt.image.BufferedImage;
-import java.awt.Graphics2D;
 
 public class EditState extends GameState {
 
     private BufferedImage imgButton;
-    private Button enemy1;
+    private Button btnEnemy1;
+    private Button btnEnemy2;
     private boolean clicked = false;
 
-    private GameObject gameObject;
+    private GameObject gameObject = null;
     private PlayState ps;
     private Camera cam;
 
+    private int selection = 0;
+    private GameObject e_enemy1;
+    private GameObject e_enemy2;
+    private GameObject[] entityList = {gameObject, e_enemy1, e_enemy2};
+
+
     public EditState(GameStateManager gsm, Camera cam) {
         super(gsm);
-        imgButton = GameStateManager.ui.getSprite(0, 0, 128, 64);
+        imgButton = GameStateManager.ui.getSprite(0, 0, 128, 64).image;
         this.ps = (PlayState) gsm.getState(GameStateManager.PLAY);
         this.cam = cam;
 
-        enemy1 = new Button("enemy1", new Vector2f(64 + 24, 64 + 24), 32, 24, imgButton, new Vector2f(64, 64), 200, 75);
-        enemy1.addEvent(e -> {
-            gameObject = new Enemy(cam, new Sprite("entity/enemy/littlegirl.png", 48, 48), new Vector2f(0 + (GamePanel.width / 2) - 32 + 150, 0 + (GamePanel.height / 2) - 32 + 150), 64);
+        SpriteSheet enemySheet = new SpriteSheet("entity/enemy/minimonsters.png", 16, 16);
+
+        btnEnemy1 = new Button("TinyMon", new Vector2f(64 + 24, 64 + 24), 32, 24, imgButton, new Vector2f(64, 64), 220, 75);
+        btnEnemy1.addEvent(e -> {
+            selection = 1;
+            entityList[1] = new TinyMon(cam, new SpriteSheet(enemySheet.getSprite(0, 0, 128, 32), "tiny monster", 16, 16), 
+							new Vector2f(0 + (GamePanel.width / 2) - 32 + 150, 0 + (GamePanel.height / 2) - 32 + 150), 48);
+        });
+
+        btnEnemy2 = new Button("TinyBoar", new Vector2f(64 + 24, (64 + 24) * 2), 32, 24, imgButton, new Vector2f(64, 64 + 85), 235, 75);
+        btnEnemy2.addEvent(e -> {
+            selection = 2;
+            entityList[2] = new TinyMon(cam, new SpriteSheet(enemySheet.getSprite(0, 2, 128, 32), "tiny boar", 16, 16), 
+							new Vector2f(0 + (GamePanel.width / 2) - 32 + 150, 0 + (GamePanel.height / 2) - 32 + 150), 48);
         });
     }
 
@@ -42,12 +60,15 @@ public class EditState extends GameState {
 
     @Override
     public void input(MouseHandler mouse, KeyHandler key) {
-        enemy1.input(mouse, key);
-        if(mouse.getButton() == 1 && !clicked && gameObject != null) {
+        btnEnemy1.input(mouse, key);
+        btnEnemy2.input(mouse, key);
+		
+        if(mouse.getButton() == 1 && !clicked && entityList[selection] != null && !btnEnemy1.getHovering() && !btnEnemy2.getHovering()) {
 
-            gameObject.setPos(new Vector2f(mouse.getX() - gameObject.getSize() / 2 + cam.getBounds().getPos().x, mouse.getY() - gameObject.getSize() / 2 + cam.getBounds().getPos().y));
-            if(!ps.getGameObjects().contains(gameObject)) {
-                ps.getGameObjects().add(gameObject);
+            entityList[selection].setPos(new Vector2f(mouse.getX() - entityList[selection].getSize() / 2 + cam.getBounds().getPos().x, 
+													  mouse.getY() - entityList[selection].getSize() / 2 + cam.getBounds().getPos().y));
+            if(!ps.getGameObjects().contains(entityList[selection])) {
+                ps.getGameObjects().add(entityList[selection]);
             }
             
             clicked = true;
@@ -57,7 +78,8 @@ public class EditState extends GameState {
     }
 
     @Override
-    public void render(Graphics2D g) {
-        enemy1.render(g);
+    public void render(Screen s) {
+        btnEnemy1.render(s);
+        btnEnemy2.render(s);
     }
 }

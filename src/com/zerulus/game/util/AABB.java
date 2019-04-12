@@ -29,6 +29,7 @@ public class AABB {
     public Vector2f getPos() { return pos; }
 
     public float getRadius() { return r; }
+    public float getSize() { return size; }
     public float getWidth() { return w; }
     public float getHeight() { return h; }
 
@@ -85,6 +86,24 @@ public class AABB {
         wTemp += x;
         hTemp += y;
         return ((wTemp < x || wTemp > xp) && (hTemp < y || hTemp > yp));
+    }
+
+    public boolean intersect(AABB aBox)
+    {
+
+        if((pos.getWorldVar().x + xOffset > aBox.getPos().getWorldVar().x + aBox.getXOffset() + aBox.getSize())
+        || (aBox.getPos().getWorldVar().x + xOffset > pos.getWorldVar().x + aBox.getXOffset() + aBox.getSize()))
+        {
+            return false;
+        }
+
+        if((pos.getWorldVar().y + yOffset > aBox.getPos().getWorldVar().y + aBox.getYOffset() + aBox.getSize())
+        || (aBox.getPos().getWorldVar().y + yOffset > pos.getWorldVar().y + aBox.getYOffset() + aBox.getSize()))
+        {
+            return false;
+        }
+
+        return true;
     }
 
     public boolean colCircleBox(AABB aBox) {

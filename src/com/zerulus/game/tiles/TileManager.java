@@ -1,9 +1,8 @@
 package com.zerulus.game.tiles;
 
-import com.zerulus.game.graphics.Sprite;
-import com.zerulus.game.util.Vector2f;
+import com.zerulus.game.graphics.Screen;
+import com.zerulus.game.graphics.SpriteSheet;
 import com.zerulus.game.util.Camera;
-import java.awt.Graphics2D;
 import java.util.ArrayList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -11,6 +10,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import com.zerulus.game.tiles.blocks.NormBlock;
+
 import java.io.File;
 
 public class TileManager {
@@ -42,7 +43,7 @@ public class TileManager {
         int tileHeight;
         int tileColumns;
         int layers = 0;
-        Sprite sprite;
+        SpriteSheet sprite;
 
         String[] data = new String[10];
 
@@ -60,7 +61,13 @@ public class TileManager {
             tileWidth = Integer.parseInt(eElement.getAttribute("tilewidth"));
             tileHeight = Integer.parseInt(eElement.getAttribute("tileheight"));
             tileColumns =  Integer.parseInt(eElement.getAttribute("columns"));
-            sprite = new Sprite("tile/" + imagePath + ".png", tileWidth, tileHeight);
+            
+            sprite = new SpriteSheet("tile/" + imagePath + ".png", tileWidth, tileHeight);
+
+            if(tileWidth != blockWidth || tileHeight != blockHeight) {
+                sprite.resize(blockWidth * (sprite.getSpriteSheet().w / tileWidth), blockHeight * (sprite.getSpriteSheet().h / tileHeight));
+                sprite.setSize(blockWidth, blockHeight);
+            }
 
             list = doc.getElementsByTagName("layer");
             layers = list.getLength();
@@ -80,21 +87,31 @@ public class TileManager {
                 } else {
                     tm.add(new TileMapObj(data[i], sprite, width, height, blockWidth, blockHeight, tileColumns));
                 }
-
-                cam.setLimit(width * blockWidth, height * blockHeight);
-
             }
+
+            cam.setLimit(width * blockWidth, height * blockHeight);
         } catch(Exception e) {
-            System.out.println("ERROR - TILEMANAGER: can not read tilemap");
+            System.out.println("ERROR - TILEMANAGER: can not read tilemap:");
+            e.printStackTrace();
+            System.exit(0);
         }
     }
 
-    public void render(Graphics2D g) {
+    public NormBlock getNormalTile(int id) {
+        NormBlock block = (NormBlock) tm.get(1).getBlocks()[id];
+        if(block != null) {
+            return block;
+        }
+
+        return null;
+    }
+
+    public void render(Screen s) {
         if(cam == null)
             return;
 
         for(int i = 0; i < tm.size(); i++) {
-            tm.get(i).render(g, cam.getBounds());
+            tm.get(i).render(s, cam.getBounds());
         }
     }
 }

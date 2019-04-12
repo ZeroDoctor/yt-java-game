@@ -1,9 +1,8 @@
 package com.zerulus.game.states;
 
+import com.zerulus.game.graphics.Screen;
 import com.zerulus.game.util.KeyHandler;
 import com.zerulus.game.util.MouseHandler;
-
-import java.awt.*;
 
 public class MenuState extends GameState {
     public MenuState(GameStateManager gsm) {
@@ -21,7 +20,7 @@ public class MenuState extends GameState {
     }
 
     @Override
-    public void render(Graphics2D g) {
+    public void render(Screen s) {
 
     }
 }

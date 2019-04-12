@@ -98,15 +98,6 @@ public class Font {
         return FONTSHEET;
     }
 
-    public String toHexString(Color colour) {
-        String hexColour = Integer.toHexString(colour.getRGB() & 0xffffff);
-        if (hexColour.length() < 6) {
-            hexColour = "000000".substring(0, 6 - hexColour.length()) + hexColour;
-        }
-
-        return "#" + hexColour;
-    }
-
     public BufferedImage getLetter(int x, int y) {
         BufferedImage img = FONTSHEET.getSubimage(x * w, y * h, w, h);
         if(color == defaultColor) {
@@ -126,11 +117,11 @@ public class Font {
         return img;
     }
 
-    public BufferedImage getLetter(char letter) {
+    public Sprite getLetter(char letter) {
         int value = letter;
 
         int x = value % wLetter;
         int y = value / wLetter;
-        return getLetter(x, y);
+        return new Sprite(getLetter(x, y));
     }
 }

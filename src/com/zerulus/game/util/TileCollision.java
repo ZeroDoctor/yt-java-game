@@ -8,17 +8,21 @@ import com.zerulus.game.tiles.blocks.HoleBlock;
 public class TileCollision {
 
     private Entity e;
+    private int tileId;
 
     public TileCollision(Entity e) {
         this.e = e;
     }
 
     public boolean collisionTile(float ax, float ay) {
+        int xt;
+        int yt;
+
         for(int c = 0; c < 4; c++) {
-
-            int xt = (int) ( (e.getBounds().getPos().x + ax) + (c % 2) * e.getBounds().getWidth() + e.getBounds().getXOffset()) / 64;
-            int yt = (int) ( (e.getBounds().getPos().y + ay) + (c / 2) * e.getBounds().getHeight() + e.getBounds().getYOffset()) / 64;
-
+            
+            xt = (int) ( (e.getBounds().getPos().x + ax) + (c % 2) * e.getBounds().getWidth() + e.getBounds().getXOffset()) / 64;
+            yt = (int) ( (e.getBounds().getPos().y + ay) + (c / 2) * e.getBounds().getHeight() + e.getBounds().getYOffset()) / 64;
+            
             if(TileMapObj.event_blocks[xt + (yt * TileMapObj.height)] instanceof Block) {
                 Block block = TileMapObj.event_blocks[xt + (yt * TileMapObj.height)];
                 if(block instanceof HoleBlock) {
@@ -28,8 +32,14 @@ public class TileCollision {
             }
         }
 
+        xt = (int) ( (e.getBounds().getPos().x + ax) + e.getBounds().getXOffset()) / 64;
+        yt = (int) ( (e.getBounds().getPos().y + ay) + e.getBounds().getYOffset()) / 64;
+        tileId = (xt + (yt * TileMapObj.height));
+
         return false;
     }
+
+    public int getTile() { return tileId; }
 
     private boolean collisionHole(float ax, float ay, float xt, float yt, Block block) {
         int nextXt = (int) ((( (e.getBounds().getPos().x + ax) + e.getBounds().getXOffset()) / 64) + e.getBounds().getWidth() / 64);

@@ -22,11 +22,11 @@ public class Window extends JFrame {
     public void addNotify() {
         super.addNotify();
 
-        createBufferStrategy(2);
+        createBufferStrategy(3);
         bs = getBufferStrategy();
 
         setLayout(new BorderLayout());
-        add(new GamePanel(bs, 1280, 720));
+        add(new GamePanel(bs, 1664, 936));
         
     }
 

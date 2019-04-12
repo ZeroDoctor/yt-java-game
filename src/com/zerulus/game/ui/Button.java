@@ -1,6 +1,5 @@
 package com.zerulus.game.ui;
 
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -9,14 +8,16 @@ import com.zerulus.game.util.Vector2f;
 import com.zerulus.game.util.AABB;
 import com.zerulus.game.util.KeyHandler;
 import com.zerulus.game.util.MouseHandler;
+import com.zerulus.game.graphics.Screen;
 import com.zerulus.game.graphics.Sprite;
+import com.zerulus.game.graphics.SpriteSheet;
 
 public class Button {
 
     private String label;
     private int lbWidth;
     private int lbHeight;
-    private BufferedImage image;
+    private Sprite image;
     private int iWidth;
     private int iHeight;
 
@@ -34,7 +35,7 @@ public class Button {
         this.label = label;
         this.lbWidth = lbWidth;
         this.lbHeight = lbHeight;
-        this.image = image;
+        this.image = new Sprite(image);
         this.iWidth = iWidth;
         this.iHeight = iHeight;
         this.hoverSize = 20;
@@ -72,6 +73,8 @@ public class Button {
     public void setHoverSize(int size) {
         this.hoverSize = size;
     }
+	
+	public boolean getHovering() { return hovering; }
 
     public void setHover(boolean b) {
         this.canHover = b;
@@ -119,9 +122,9 @@ public class Button {
         }
     }
 
-    public void render(Graphics2D g) {
-        Sprite.drawArray(g, label, lbPos, lbWidth, lbHeight);
-        g.drawImage(image, (int) iPos.x, (int) iPos.y, iWidth, iHeight, null);
+    public void render(Screen s) {
+        SpriteSheet.drawArray(s, label, lbPos, lbWidth, lbHeight);
+        s.drawImage(image, (int) iPos.x, (int) iPos.y, iWidth, iHeight, null);
     }
 
 }

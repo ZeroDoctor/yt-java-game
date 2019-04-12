@@ -1,34 +1,39 @@
 package com.zerulus.game.entity;
 
 import com.zerulus.game.graphics.Animation;
+import com.zerulus.game.graphics.Screen;
+import com.zerulus.game.graphics.SpriteSheet;
 import com.zerulus.game.graphics.Sprite;
 import com.zerulus.game.util.AABB;
 import com.zerulus.game.util.TileCollision;
 import com.zerulus.game.util.Vector2f;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
-
 public abstract class Entity extends GameObject {
 
-    protected final int ATTACK = 5;
-    protected final int FALLEN = 4;
-    protected final int UP = 3;
-    protected final int DOWN = 2;
-    protected final int LEFT = 1;
-    protected final int RIGHT = 0;
+    public int IDLE = 6;
+    public int ATTACK = 5;
+    public int FALLEN = 4;
+    public int UP = 3;
+    public int DOWN = 2;
+    public int LEFT = 1;
+    public int RIGHT = 0;
+
+    protected boolean hasIdle = false;
 
     protected int currentAnimation;
+    protected int currentDirection = RIGHT;
+
+    public boolean useRight = false;
 
     protected Animation ani;
     protected int hitsize;
 
-    protected boolean up;
-    protected boolean down;
-    protected boolean right;
-    protected boolean left;
-    protected boolean attack;
-    protected boolean fallen;
+    protected boolean up = false;
+    protected boolean down = false;
+    protected boolean right = false;
+    protected boolean left = false;
+    protected boolean attack = false;
+    protected boolean fallen = false;
 
     public boolean xCol = false;
     public boolean yCol = false;
@@ -43,18 +48,18 @@ public abstract class Entity extends GameObject {
     protected double attacktime;
     protected boolean canAttack = true;
     protected boolean attacking = false;
-
+	
+	protected int maxHealth = 100;
     protected int health = 100;
     protected int defense = 100;
     protected int damage = 25;
 
     protected AABB hitBounds;
 
-    public Entity(Sprite sprite, Vector2f origin, int size) {
+    public Entity(SpriteSheet sprite, Vector2f origin, int size) {
         super(sprite, origin, 0, 0, size);
         this.hitsize = size;
 
-        bounds = new AABB(origin, size, size);
         hitBounds = new AABB(origin, size, size);
         hitBounds.setXOffset(size / 2);
 
@@ -66,27 +71,16 @@ public abstract class Entity extends GameObject {
 
     public void setFallen(boolean b) { fallen = b; }
 
-    public void setHealth(int i) { 
+    public void setHealth(int i, float f, boolean dir) {
         if(!isInvincible) {
             health = i;
             isInvincible = true;
             invincibletime = System.nanoTime();
-            if(health < 0) {
-                die = true;
-            }
-        }
-    }
-
-    public void setHealth(int i, float f) {
-        if(!isInvincible) {
-            health = i;
-            isInvincible = true;
-            invincibletime = System.nanoTime();
-            if(health < 0) {
+            if(health <= 0) {
                 die = true;
             }
 
-            addForce(f * getDirection(), currentAnimation == UP || currentAnimation == DOWN);
+            addForce(f, dir);
         }
     }
 
@@ -95,14 +89,14 @@ public abstract class Entity extends GameObject {
     public int getDefense() { return defense; }
     public AABB getHitBounds() { return hitBounds; }
     public int getDirection() {
-        if(currentAnimation == UP || currentAnimation == LEFT) {
-            return -1;
+        if(currentDirection == UP || currentDirection == LEFT) {
+            return 1;
         }
-        return 1;
+        return -1;
     }
     public Animation getAnimation() { return ani; }
 
-    public void setAnimation(int i, BufferedImage[] frames, int delay) {
+    public void setAnimation(int i, Sprite[] frames, int delay) {
         currentAnimation = i;
         ani.setFrames(i, frames);
         ani.setDelay(delay);
@@ -139,7 +133,11 @@ public abstract class Entity extends GameObject {
             if(!attacking && currentAnimation > 4) {
                 setAnimation(currentAnimation - ATTACK, sprite.getSpriteArray(currentAnimation - ATTACK), -1);
             } else if(!attacking) {
-                setAnimation(currentAnimation, sprite.getSpriteArray(currentAnimation), -1);
+                if(hasIdle && currentAnimation != IDLE) {
+                    setAnimation(IDLE, sprite.getSpriteArray(IDLE), 10);
+                } else if(!hasIdle) {
+                    setAnimation(currentAnimation, sprite.getSpriteArray(currentAnimation), -1);
+                }
             }
         }
     }
@@ -177,6 +175,7 @@ public abstract class Entity extends GameObject {
 
     public void move() {
         if(up) {
+            currentDirection = 3;
             dy -= acc;
             if(dy < -maxSpeed) {
                 dy = -maxSpeed;
@@ -191,6 +190,7 @@ public abstract class Entity extends GameObject {
         }
 
         if(down) {
+            currentDirection = 2;
             dy += acc;
             if(dy > maxSpeed) {
                 dy = maxSpeed;
@@ -205,6 +205,7 @@ public abstract class Entity extends GameObject {
         }
 
         if(left) {
+            currentDirection = 1;
             dx -= acc;
             if(dx < -maxSpeed) {
                 dx = -maxSpeed;
@@ -219,6 +220,7 @@ public abstract class Entity extends GameObject {
         }
 
         if(right) {
+            currentDirection = 0;
             dx += acc;
             if(dx > maxSpeed) {
                 dx = maxSpeed;
@@ -244,6 +246,6 @@ public abstract class Entity extends GameObject {
         ani.update();
     }
 
-    public abstract void render(Graphics2D g);
+    public abstract void render(Screen s);
 
 }

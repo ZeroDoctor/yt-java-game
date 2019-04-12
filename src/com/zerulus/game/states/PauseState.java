@@ -1,11 +1,11 @@
 package com.zerulus.game.states;
 
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import com.zerulus.game.util.MouseHandler;
 import com.zerulus.game.util.KeyHandler;
 import com.zerulus.game.util.Vector2f;
+import com.zerulus.game.graphics.Screen;
 import com.zerulus.game.ui.Button;
 
 public class PauseState extends GameState {
@@ -16,7 +16,7 @@ public class PauseState extends GameState {
 
     public PauseState(GameStateManager gsm) {
         super(gsm);
-        imgButton = GameStateManager.ui.getSprite(0, 0, 128, 64);
+        imgButton = GameStateManager.ui.getSprite(0, 0, 128, 64).image;
 
 
         btnResume = new Button("RESUME", 32, 24, imgButton, 200, 75, new Vector2f(0, -50));
@@ -40,11 +40,12 @@ public class PauseState extends GameState {
     public void input(MouseHandler mouse, KeyHandler key) {
         btnResume.input(mouse, key);
         btnExit.input(mouse, key);
+
     }
 
     @Override
-    public void render(Graphics2D g) {
-        btnResume.render(g);
-        btnExit.render(g);
+    public void render(Screen s) {
+        btnResume.render(s);
+        btnExit.render(s);
     }
 }

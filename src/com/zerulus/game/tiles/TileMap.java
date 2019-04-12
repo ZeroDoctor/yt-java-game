@@ -1,9 +1,11 @@
 package com.zerulus.game.tiles;
 
 import com.zerulus.game.util.AABB;
-
-import java.awt.Graphics2D;
+import com.zerulus.game.graphics.Screen;
+import com.zerulus.game.tiles.blocks.Block;
 
 public abstract class TileMap {
-    public abstract void render(Graphics2D g, AABB cam);
+
+    public abstract Block[] getBlocks();
+    public abstract void render(Screen s, AABB cam);
 }

@@ -7,11 +7,10 @@ import com.zerulus.game.util.Vector2f;
 import com.zerulus.game.util.AABB;
 import com.zerulus.game.util.Camera;
 import com.zerulus.game.graphics.Font;
-import com.zerulus.game.graphics.Sprite;
+import com.zerulus.game.graphics.Screen;
+import com.zerulus.game.graphics.SpriteSheet;
 
-import java.awt.Graphics2D;
 import java.awt.Color;
-import java.util.ArrayList;
 
 public class GameStateManager {
 
@@ -26,7 +25,7 @@ public class GameStateManager {
     public static final int EDIT = 4;
 
     public static Font font;
-    public static Sprite ui;
+    public static SpriteSheet ui;
     public static Camera cam;
 
     public GameStateManager() {
@@ -36,10 +35,10 @@ public class GameStateManager {
         states = new GameState[5];
 
         font = new Font("font/font.png", 10, 10);
-        Sprite.currentFont = font;
+        SpriteSheet.currentFont = font;
         font.setDefaultColor(Color.decode("0xffffff"));
 
-        ui = new Sprite("ui/ui.png", 64, 64);
+        ui = new SpriteSheet("ui/ui.png", 64, 64);
 
         cam = new Camera(new AABB(new Vector2f(0, 0), GamePanel.width + 64, GamePanel.height + 64));
 
@@ -108,10 +107,10 @@ public class GameStateManager {
         }        
     }
 
-    public void render(Graphics2D g) {
+    public void render(Screen s) {
         for (int i = 0; i < states.length; i++) {
             if (states[i] != null) {
-                states[i].render(g);
+                states[i].render(s);
             }
         }
     }

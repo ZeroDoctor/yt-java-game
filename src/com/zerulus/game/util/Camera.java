@@ -4,9 +4,7 @@ import com.zerulus.game.GamePanel;
 import com.zerulus.game.states.PlayState;
 import com.zerulus.game.util.AABB;
 import com.zerulus.game.entity.Entity;
-
-import java.awt.Graphics;
-import java.awt.Color;
+import com.zerulus.game.graphics.Screen;
 
 public class Camera {
 
@@ -204,13 +202,14 @@ public class Camera {
         }
     }
 
-    public void render(Graphics g) {
-        /* g.setColor(Color.blue);
-        g.drawRect((int) collisionCam.getPos().getWorldVar().x, (int) collisionCam.getPos().getWorldVar().y, (int) collisionCam.getWidth(),
-                (int) collisionCam.getHeight()); */
+    public void render(Screen s) {
+     /* g.setColor(Color.blue);
+        g.drawRect((int) collisionCam.getPos().getWorldVar().x, (int) collisionCam.getPos().getWorldVar().y, 
+                   (int) collisionCam.getWidth(),
+                   (int) collisionCam.getHeight()); */
 
         
-         /* g.setColor(Color.magenta); 
+      /* g.setColor(Color.magenta); 
          g.drawLine(GamePanel.width / 2, 0, GamePanel.width / 2, GamePanel.height); 
          g.drawLine(0, GamePanel.height / 2, GamePanel.width,GamePanel.height / 2); */
         

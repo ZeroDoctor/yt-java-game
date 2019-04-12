@@ -4,14 +4,13 @@ import com.zerulus.game.GamePanel;
 import com.zerulus.game.entity.GameObject;
 import com.zerulus.game.entity.Enemy;
 import com.zerulus.game.entity.Player;
-import com.zerulus.game.graphics.Font;
-import com.zerulus.game.graphics.Sprite;
+import com.zerulus.game.graphics.Screen;
+import com.zerulus.game.graphics.SpriteSheet;
 import com.zerulus.game.tiles.TileManager;
 import com.zerulus.game.util.KeyHandler;
 import com.zerulus.game.util.MouseHandler;
 import com.zerulus.game.util.Vector2f;
 import com.zerulus.game.util.Camera;
-import java.awt.Graphics2D;
 import java.util.ArrayList;
 
 public class PlayState extends GameState {
@@ -33,7 +32,7 @@ public class PlayState extends GameState {
 		tm = new TileManager("tile/tilemap.xml", cam);
 
 		gameObject = new ArrayList<GameObject>();
-		player = new Player(cam, new Sprite("entity/wizardPlayer.png", 64, 64), new Vector2f(0 + (GamePanel.width / 2) - 32, 0 + (GamePanel.height / 2) - 32), 64);
+		player = new Player(cam, new SpriteSheet("entity/wizardPlayer.png", 64, 64), new Vector2f(0 + (GamePanel.width / 2) - 32, 0 + (GamePanel.height / 2) - 32), 64, tm);
 		
 		cam.target(player);
 	}
@@ -70,8 +69,7 @@ public class PlayState extends GameState {
 			}
 
 			cam.update();
-		}
-		
+		}	
 	}
 
 	public void input(MouseHandler mouse, KeyHandler key) {
@@ -105,21 +103,20 @@ public class PlayState extends GameState {
 				gsm.add(GameStateManager.PAUSE);
 			}
 		}
-		
 	}
 
-	public void render(Graphics2D g) {
-		tm.render(g);
+	public void render(Screen s) {
+		tm.render(s);
 		String fps = GamePanel.oldFrameCount + " FPS";
-		Sprite.drawArray(g, fps, new Vector2f(GamePanel.width - fps.length() * 32, 32), 32, 24);
+		SpriteSheet.drawArray(s, fps, new Vector2f(GamePanel.width - fps.length() * 32, 32), 32, 24);
 
 		String tps = GamePanel.oldTickCount + " TPS";
-		Sprite.drawArray(g, tps, new Vector2f(GamePanel.width - tps.length() * 32, 64), 32, 24);
+		SpriteSheet.drawArray(s, tps, new Vector2f(GamePanel.width - tps.length() * 32, 64), 32, 24);
 		
-		player.render(g);
+		player.render(s);
 		for(int i = 0; i < gameObject.size(); i++) {
-			gameObject.get(i).render(g);
+			gameObject.get(i).render(s);
 		}
-		cam.render(g);
+		cam.render(s);
 	}
 }

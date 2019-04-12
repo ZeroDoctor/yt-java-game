@@ -1,15 +1,14 @@
 package com.zerulus.game.entity;
 
-import com.zerulus.game.graphics.Sprite;
+import com.zerulus.game.graphics.Screen;
+import com.zerulus.game.graphics.SpriteSheet;
 import com.zerulus.game.util.AABB;
 import com.zerulus.game.util.Vector2f;
 import com.zerulus.game.util.TileCollision;
 
-import java.awt.Graphics2D;
-
 public abstract class GameObject {
 
-    protected Sprite sprite;
+    protected SpriteSheet sprite;
     protected AABB bounds;
     protected Vector2f pos;
     protected int size;
@@ -27,11 +26,15 @@ public abstract class GameObject {
     protected boolean teleported = false;
     protected TileCollision tc;
 
-    public GameObject(Sprite sprite, Vector2f origin, int spriteX, int spriteY, int size) {
+    public GameObject(SpriteSheet sprite, Vector2f origin, int spriteX, int spriteY, int size) {
         this.bounds = new AABB(origin, size, size);
         this.sprite = sprite;
         this.pos = origin;
         this.size = size;
+        
+        if(size != sprite.h || size != sprite.w) {
+            sprite.getSpriteArray2();
+        }
     }
 
     public void setPos(Vector2f pos) { 
@@ -39,7 +42,7 @@ public abstract class GameObject {
         this.bounds = new AABB(pos, size, size);
         teleported = true;
     }
-    public void setSprite(Sprite sprite) { this.sprite = sprite; }
+    public void setSprite(SpriteSheet sprite) { this.sprite = sprite; }
     public void setSize(int i) { size = i; }
     public void setMaxSpeed(float f) { maxSpeed = f; }
     public void setAcc(float f) { acc = f; }
@@ -66,8 +69,8 @@ public abstract class GameObject {
 
     }
 
-    public void render(Graphics2D g) {
-        g.drawImage(sprite.getSprite(spriteX, spriteY, size, size), (int) (pos.getWorldVar().x), (int) (pos.getWorldVar().y), size, size, null);
+    public void render(Screen s) {
+        s.drawImage(sprite.getSprite(spriteX, spriteY, size, size), (int) (pos.getWorldVar().x), (int) (pos.getWorldVar().y), size, size, null);
     }
 
 }

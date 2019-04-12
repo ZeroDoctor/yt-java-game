@@ -1,11 +1,10 @@
 package com.zerulus.game.graphics;
 
-
-import java.awt.image.BufferedImage;
+import com.zerulus.game.graphics.Sprite;
 
 public class Animation {
 
-    private BufferedImage[] frames;
+    private Sprite[] frames;
     private int[] states;
     private int currentFrame;
     private int numFrames;
@@ -15,7 +14,7 @@ public class Animation {
 
     private int timesPlayed;
 
-    public Animation(BufferedImage[] frames) {
+    public Animation(Sprite[] frames) {
         setFrames(0, frames);
         timesPlayed = 0;
         states = new int[10];
@@ -26,7 +25,7 @@ public class Animation {
         states = new int[10];
     }
 
-    public void setFrames(int state, BufferedImage[] frames) {
+    public void setFrames(int state, Sprite[] frames) {
         this.frames = frames;
         currentFrame = 0;
         count = 0;
@@ -61,7 +60,7 @@ public class Animation {
     public int getDelay() { return delay; }
     public int getFrame() { return currentFrame; }
     public int getCount() { return count; }
-    public BufferedImage getImage() { return frames[currentFrame]; }
+    public Sprite getImage() { return frames[currentFrame]; }
     public boolean hasPlayedOnce() { return timesPlayed > 0; }
     public boolean hasPlayed(int i) { return timesPlayed == i; }
 

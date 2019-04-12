@@ -1,9 +1,7 @@
 package com.zerulus.game.tiles;
 
-import java.util.HashMap;
-import java.awt.Graphics2D;
-
-import com.zerulus.game.graphics.Sprite;
+import com.zerulus.game.graphics.Screen;
+import com.zerulus.game.graphics.SpriteSheet;
 import com.zerulus.game.util.AABB;
 import com.zerulus.game.util.Vector2f;
 import com.zerulus.game.tiles.blocks.Block;
@@ -20,7 +18,7 @@ public class TileMapObj extends TileMap {
     public static int width;
     public static int height;
 
-    public TileMapObj(String data, Sprite sprite, int width, int height, int tileWidth, int tileHeight, int tileColumns) {
+    public TileMapObj(String data, SpriteSheet sprite, int width, int height, int tileWidth, int tileHeight, int tileColumns) {
         Block tempBlock;
         event_blocks = new Block[width * height];
 
@@ -35,22 +33,24 @@ public class TileMapObj extends TileMap {
             int temp = Integer.parseInt(block[i].replaceAll("\\s+",""));
              if(temp != 0) {
                  if(temp == 172) {
-                     tempBlock = new HoleBlock(sprite.getSprite((int) ((temp - 1) % tileColumns), (int) ((temp - 1) / tileColumns) ),new Vector2f((int) (i % width) * tileWidth, (int) (i / height) * tileHeight), tileWidth, tileHeight);
+                     tempBlock = new HoleBlock(sprite.getSprite((int) ((temp - 1) % tileColumns), (int) ((temp - 1) / tileColumns) ), new Vector2f((int) (i % width) * tileWidth, (int) (i / height) * tileHeight), tileWidth, tileHeight);
                  } else {
-                     tempBlock = new ObjBlock(sprite.getSprite((int) ((temp - 1) % tileColumns), (int) ((temp - 1) / tileColumns) ),new Vector2f((int) (i % width) * tileWidth, (int) (i / height) * tileHeight), tileWidth, tileHeight);
+                     tempBlock = new ObjBlock(sprite.getSprite((int) ((temp - 1) % tileColumns), (int) ((temp - 1) / tileColumns) ), new Vector2f((int) (i % width) * tileWidth, (int) (i / height) * tileHeight), tileWidth, tileHeight);
                  }
                  event_blocks[i] = tempBlock;
              }
         }
     }
 
-    public void render(Graphics2D g, AABB cam) {
+    public Block[] getBlocks() { return event_blocks; }
+
+    public void render(Screen s, AABB cam) {
         int x = (int) ((cam.getPos().x) / tileWidth);
         int y = (int) ((cam.getPos().y) / tileHeight);
         for(int i = x; i < x + (cam.getWidth() / tileWidth); i++) {
             for(int j = y; j < y + (cam.getHeight() / tileHeight); j++) {
                 if(event_blocks[i + (j * height)] != null)
-                    event_blocks[i + (j * height)].render(g);
+                    event_blocks[i + (j * height)].render(s);
             }
         }
     }

@@ -1,8 +1,7 @@
 package com.zerulus.game.tiles.blocks;
 
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-
+import com.zerulus.game.graphics.Screen;
+import com.zerulus.game.graphics.Sprite;
 import com.zerulus.game.util.Vector2f;
 import com.zerulus.game.util.AABB;
 
@@ -10,10 +9,10 @@ public abstract class Block {
     protected int w;
     protected int h;
 
-    protected BufferedImage img;
-    protected Vector2f pos;
+    public Sprite img;
+    public Vector2f pos;
 
-    public Block(BufferedImage img, Vector2f pos, int w, int h) {
+    public Block(Sprite img, Vector2f pos, int w, int h) {
         this.img = img;
         this.pos = pos;
         this.w = w;
@@ -25,9 +24,11 @@ public abstract class Block {
 
     public abstract boolean update(AABB p);
     public abstract boolean isInside(AABB p);
+
+    public abstract Sprite getImage();
     public Vector2f getPos() { return pos; }
 
-    public void render(Graphics2D g) {
-        g.drawImage(img, (int) pos.getWorldVar().x, (int) pos.getWorldVar().y, w, h, null);
+    public void render(Screen s) {
+        s.drawImage(img, (int) pos.getWorldVar().x, (int) pos.getWorldVar().y, w, h, null);
     }
 }

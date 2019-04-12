@@ -1,39 +1,46 @@
 package com.zerulus.game.entity;
 
-import com.zerulus.game.graphics.Sprite;
+import com.zerulus.game.graphics.Screen;
+import com.zerulus.game.graphics.SpriteSheet;
 import com.zerulus.game.util.AABB;
 import com.zerulus.game.util.Camera;
 import com.zerulus.game.util.Vector2f;
 
-import java.awt.*;
+import java.awt.Color;
 
-public class Enemy extends Entity {
+public abstract class Enemy extends Entity {
 
-    private AABB sense;
-    private int r_sense;
+    protected AABB sense;
+    protected int r_sense;
 
-    private AABB attackrange;
-    private int r_attackrange;
+    protected AABB attackrange;
+    protected int r_attackrange;
+	
+    private float healthpercent = 1;
 
     private Camera cam;
-    public Enemy(Camera cam, Sprite sprite, Vector2f origin, int size) {
+
+    protected int xOffset;
+    protected int yOffset;
+
+    public Enemy(Camera cam, SpriteSheet sprite, Vector2f origin, int size) {
         super(sprite, origin, size);
-        deacc = 2f;
         this.cam = cam;
 
-        acc = 1f;
-        maxSpeed = 2f;
-        r_sense = 350;
-        r_attackrange = 32;
-
-        bounds.setWidth(42);
-        bounds.setHeight(20);
-        bounds.setXOffset(12);
-        bounds.setYOffset(40);
+        bounds.setWidth(size / 2);
+        bounds.setHeight(size / 2 - yOffset);
+        bounds.setXOffset(size / 2 - xOffset);
+        bounds.setYOffset(size / 2 + yOffset);
 
         sense = new AABB(new Vector2f(origin.x + size / 2 - r_sense / 2, origin.y + size / 2 - r_sense / 2), r_sense);
         attackrange = new AABB(new Vector2f(origin.x + bounds.getXOffset() + bounds.getWidth() / 2 - r_attackrange / 2 , origin.y + bounds.getYOffset() + bounds.getHeight() / 2 - r_attackrange / 2 ), r_attackrange);
     }
+	
+	public void setHealth(int i, float f, boolean dir) {
+		super.setHealth(i, f, dir);
+		
+        healthpercent = (float) health / (float) maxHealth;
+	}
 
     public void chase(Player player) {
         AABB playerBounds = player.getBounds();
@@ -75,10 +82,11 @@ public class Enemy extends Entity {
 
             if(teleported) {
                 teleported = false;
-                bounds.setWidth(42);
-                bounds.setHeight(20);
-                bounds.setXOffset(12);
-                bounds.setYOffset(40);
+
+                bounds.setWidth(size / 2);
+                bounds.setHeight(size / 2 - yOffset);
+                bounds.setXOffset(size / 2 - xOffset);
+                bounds.setYOffset(size / 2 + yOffset);
 
                 hitBounds = new AABB(pos, size, size);
                 hitBounds.setXOffset(size / 2);
@@ -87,9 +95,9 @@ public class Enemy extends Entity {
                 attackrange = new AABB(new Vector2f(pos.x + bounds.getXOffset() + bounds.getWidth() / 2 - r_attackrange / 2 , pos.y + bounds.getYOffset() + bounds.getHeight() / 2 - r_attackrange / 2 ), r_attackrange);
             }
 
-            if(attackrange.colCircleBox(player.getBounds())) {
+            if(attackrange.colCircleBox(player.getBounds()) && !isInvincible) {
                 attack = true;
-                player.setHealth(player.getHealth() - damage);
+                player.setHealth(player.getHealth() - damage, 5f * getDirection(), currentDirection == 3 || currentDirection == 2);
             } else {
                 attack = false;
             }
@@ -106,7 +114,7 @@ public class Enemy extends Entity {
                     pos.y += dy;
                 }
             } else {
-                if(ani.hasPlayedOnce()) { 
+                if(ani.hasPlayedOnce()) {
                     die = true;
                 }
             }
@@ -114,18 +122,21 @@ public class Enemy extends Entity {
     }
 
     @Override
-    public void render(Graphics2D g) {
+    public void render(Screen s) {
         if(cam.getBounds().collides(this.bounds)) { 
-            /* g.setColor(Color.green);
-            g.drawRect((int) (pos.getWorldVar().x + bounds.getXOffset()), (int) (pos.getWorldVar().y + bounds.getYOffset()), (int) bounds.getWidth(), (int) bounds.getHeight()); */
 
-            g.setColor(Color.blue);
-            g.drawOval((int) (sense.getPos().getWorldVar().x), (int) (sense.getPos().getWorldVar().y), r_sense, r_sense);
-
-            g.setColor(Color.red);
-            g.drawOval((int) (attackrange.getPos().getWorldVar().x), (int) (attackrange.getPos().getWorldVar().y), r_attackrange, r_attackrange);
-
-            g.drawImage(ani.getImage(), (int) (pos.getWorldVar().x), (int) (pos.getWorldVar().y), size, size, null);
+            //if(isInvincible) 
+            if(useRight && left) {
+                s.drawImage(ani.getImage(), (int) (pos.getWorldVar().x) + size, (int) (pos.getWorldVar().y), -size, size, null);
+            } else {
+                s.drawImage(ani.getImage(), (int) (pos.getWorldVar().x), (int) (pos.getWorldVar().y), size, size, null);
+            }
+            
+			
+            // Health Bar UI
+			s.fillRect((int) (pos.getWorldVar().x + bounds.getXOffset()), (int) (pos.getWorldVar().y - 5), 24, 5, Color.red.getRGB());
+			
+            s.fillRect((int) (pos.getWorldVar().x + bounds.getXOffset()), (int) (pos.getWorldVar().y - 5), (int) (24 * healthpercent), 5, Color.green.getRGB());
         }
     }
 }
