@@ -28,21 +28,23 @@ public abstract class GameObject {
     protected float force = 25f;
     
     protected boolean teleported = false;
-    protected TileCollision tc;
+	protected TileCollision tc;
 
     public GameObject(SpriteSheet sprite, Vector2f origin, int spriteX, int spriteY, int size) {
-        this.bounds = new AABB(origin, size, size);
+        this(origin, size);
         this.sprite = sprite;
-        this.pos = origin;
-        this.size = size;
     }
 
     public GameObject(Sprite image, Vector2f origin, int size) {
-        this.bounds = new AABB(origin, size, size);
+        this(origin, size);
         this.image = image;
-        this.pos = origin;
-        this.size = size;
-    }
+	}
+	
+	private GameObject(Vector2f origin, int size) {
+		this.bounds = new AABB(origin, size, size);
+		this.pos = origin;
+		this.size = size;
+	}
 
     public void setPos(Vector2f pos) {
         this.pos = pos;
@@ -81,6 +83,5 @@ public abstract class GameObject {
 
     public void render(Graphics2D g) {
         g.drawImage(image.image, (int) (pos.getWorldVar().x), (int) (pos.getWorldVar().y), size, size, null);
-    }
-
+	}
 }

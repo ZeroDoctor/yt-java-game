@@ -5,6 +5,7 @@ import com.zerulus.game.util.Camera;
 import com.zerulus.game.math.AABB;
 import com.zerulus.game.math.Vector2f;
 
+import java.util.ArrayList;
 import java.awt.Graphics2D;
 import java.awt.Color;
 
@@ -20,6 +21,8 @@ public abstract class Enemy extends Entity {
 
     protected int xOffset;
     protected int yOffset;
+
+    protected ArrayList<GameObject> collisions;
 
     public Enemy(Camera cam, SpriteSheet sprite, Vector2f origin, int size) {
         super(sprite, origin, size);

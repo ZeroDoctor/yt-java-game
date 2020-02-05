@@ -17,10 +17,12 @@ public class SpriteSheet {
     public int h;
     private int wSprite;
     private int hSprite;
+    private String file;
 
     public static Font currentFont;
 
     public SpriteSheet(String file) {
+        this.file = file;
         w = TILE_SIZE;
         h = TILE_SIZE;
 
@@ -48,6 +50,7 @@ public class SpriteSheet {
     public SpriteSheet(String file, int w, int h) {
         this.w = w;
         this.h = h;
+        this.file = file;
 
         System.out.println("Loading: " + file + "...");
         SPRITESHEET = new Sprite(loadSprite(file));
@@ -72,13 +75,12 @@ public class SpriteSheet {
         hSprite = SPRITESHEET.image.getHeight() / h;
     }
 
-    public int getWidth() {
-        return w;
-    }
-
-    public int getHeight() {
-        return h;
-    }
+    public int getWidth() { return w; }
+    public int getHeight() { return h; }
+    public int getRows() { return hSprite; }
+    public int getCols() { return wSprite; }
+    public int getTotalTiles() { return wSprite * hSprite; }
+    public String getFilename() { return file; }
 
     private BufferedImage loadSprite(String file) {
         BufferedImage sprite = null;

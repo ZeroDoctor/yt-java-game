@@ -9,7 +9,6 @@ import java.awt.image.BufferedImage;
 
 public class BuildOptionUI {
 
-    private SpriteSheet slots;
     private SpriteSheet icons;
 
     private BufferedImage imgButton;
@@ -18,7 +17,6 @@ public class BuildOptionUI {
     private Slots[] parentSlots;
 
     public BuildOptionUI() {
-        this.slots = new SpriteSheet("ui/slots.png");
         this.icons = new SpriteSheet("ui/icons.png", 32, 32);
 
         this.imgButton = GameStateManager.button.getSubimage(0, 137, 40, 40);
@@ -60,7 +58,6 @@ public class BuildOptionUI {
 
     private Slots[] createBuildingUI() {
         SpriteSheet slots = new SpriteSheet("ui/slots.png");
-        SpriteSheet icons = new SpriteSheet("ui/icons.png", 32, 32);
 
         BufferedImage imgButton = GameStateManager.button.getSubimage(0, 137, 40, 40);
         BufferedImage imgPressed = GameStateManager.button.getSubimage(41, 137, 40, 40);
@@ -88,6 +85,8 @@ public class BuildOptionUI {
             btnBuilding[i].addPressedImage(imgPressed);
         }
 
+
+
         Vector2f[][] slotsPos = new Vector2f[btnBuilding.length][slotsVert.length];
 
         int img = 0;
@@ -105,9 +104,22 @@ public class BuildOptionUI {
         buildingslots[1] = new Slots(btnBuilding[1], new BufferedImage[] { null, slotsVert[1], slotsVert[1] }, slotsPos[1], 0);
         buildingslots[2] = new Slots(btnBuilding[2], new BufferedImage[] { null, slotsVert[1], null }, slotsPos[2], 0);
 
+        buildingButtons(buildingslots);
+
         return buildingslots;
     }
 
-
+    private void buildingButtons(Slots[] buildingslots) {
+        for(int i = 0; i < buildingslots.length; i++) {
+            buildingslots[i].getButton().addSlotEvent(e -> {
+                if(e.isVisibleChildren()) {
+                    e.showChildren(false);
+                } else {
+                    e.showChildren(true);
+                }
+            });
+        }
+        
+    }
 
 }

@@ -181,10 +181,10 @@ public class Camera {
             }
         } else {
             if (!e.yCol) {
-                if (collisionCam.getPos().y + GamePanel.height / 2 - e.getSize() / 2 + dy > e.getPos().y + e.getDy() + 2) {
+                if (collisionCam.getPos().y + collisionCam.getHeight() / 2 + dy > e.getPos().y + e.getSize() / 2 + e.getDy() + 2) {
                     up = true;
                     down = false;
-                } else if (collisionCam.getPos().y + GamePanel.height / 2 - e.getSize() / 2 + dy < e.getPos().y + e.getDy() - 2) {
+                } else if (collisionCam.getPos().y + collisionCam.getHeight() / 2 + dy < e.getPos().y + e.getSize() / 2 + e.getDy() - 2) {
                     down = true;
                     up = false;
                 } else {
@@ -195,10 +195,10 @@ public class Camera {
             }
 
             if (!e.xCol) {
-                if (collisionCam.getPos().x + GamePanel.width / 2 - e.getSize() / 2 + dx > e.getPos().x + e.getDx() + 2) {
+                if (collisionCam.getPos().x + collisionCam.getWidth() / 2  + dx > e.getPos().x + e.getSize() / 2 + e.getDx() + 2) {
                     left = true;
                     right = false;
-                } else if (collisionCam.getPos().x + GamePanel.width / 2 - e.getSize() / 2 + dx < e.getPos().x + e.getDx() - 2) {
+                } else if (collisionCam.getPos().x + collisionCam.getWidth() / 2 + dx < e.getPos().x + e.getSize() / 2 + e.getDx() - 2) {
                     right = true;
                     left = false;
                 } else {

@@ -14,10 +14,13 @@ public class AABB {
     private float r;
     private int size;
 
+    private float surfaceArea;
+
     public AABB(Vector2f pos, int w, int h) {
         this.pos = pos;
         this.w = w;
         this.h = h;
+        this.surfaceArea = w * h;
 
         size = Math.max(w, h);
     }
@@ -25,6 +28,7 @@ public class AABB {
     public AABB(Vector2f pos, int r) {
         this.pos = pos;
         this.r = r;
+        this.surfaceArea = (float) Math.PI * (r * r);
 
         size = r;
     }
@@ -35,6 +39,7 @@ public class AABB {
     public float getSize() { return size; }
     public float getWidth() { return w; }
     public float getHeight() { return h; }
+    public float getSurfaceArea() { return surfaceArea; }
 
     public void setBox(Vector2f pos, int w, int h) {
         this.pos = pos;
@@ -159,5 +164,27 @@ public class AABB {
         float dy = pos.y - other.y;
         return (float) Math.sqrt(dx * dx + dy * dy);
     }
+
+    public AABB merge(AABB other) {
+        float minX = Math.min(pos.x, other.getPos().x);
+        float minY = Math.min(pos.y, other.getPos().y);
+
+        int maxW = (int) Math.max(w, other.getWidth());
+        int maxH = (int) Math.max(h, other.getHeight());
+
+        Vector2f pos = new Vector2f(minX, minY);
+        return new AABB(pos, maxW, maxH);
+	} 
+	
+	public String toString() {
+
+		String x = Float.toString(pos.x);
+		String y = Float.toString(pos.y);
+		String w = Float.toString(this.w);
+		String h = Float.toString(this.h);
+
+		return "{" + x + ", " + y + " : " + w + ", " + h + "}";
+	}
+
 
 }

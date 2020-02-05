@@ -7,6 +7,7 @@ import com.zerulus.game.math.Vector2f;
 import com.zerulus.game.math.AABB;
 
 public class NormBlock extends Block {
+
     public NormBlock(Sprite img, Vector2f pos, int w, int h) {
         super(img, pos, w, h);
 
@@ -17,9 +18,8 @@ public class NormBlock extends Block {
         return false;
     }
 
-    public Sprite getImage() {
-        return img;
-    }
+    public Sprite getImage() { return img; }
+
     public boolean isInside(AABB p) {
         return false;
     }

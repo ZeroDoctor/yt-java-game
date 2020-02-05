@@ -2,15 +2,19 @@ package com.zerulus.game.entity;
 
 
 import com.zerulus.game.GamePanel;
+
 import com.zerulus.game.graphics.SpriteSheet;
 import com.zerulus.game.graphics.Sprite;
+
 import com.zerulus.game.util.KeyHandler;
 import com.zerulus.game.util.MouseHandler;
+import com.zerulus.game.util.Camera;
+
 import com.zerulus.game.math.Vector2f;
 import com.zerulus.game.states.PlayState;
+
 import com.zerulus.game.tiles.TileManager;
 import com.zerulus.game.tiles.blocks.NormBlock;
-import com.zerulus.game.util.Camera;
 
 import java.util.ArrayList;
 import java.awt.Color;
@@ -28,9 +32,9 @@ public class Player extends Entity {
         this.cam = cam;
         this.tm = tm;
         
-        bounds.setWidth(42);
+        bounds.setWidth(32);
         bounds.setHeight(20);
-        bounds.setXOffset(12);
+        bounds.setXOffset(16);
         bounds.setYOffset(40);
 
         hitBounds.setWidth(42);
@@ -54,6 +58,8 @@ public class Player extends Entity {
         }
 
         hasIdle = false;
+        health = 500;
+        maxHealth = 500;
     }
 
     public void setTargetEnemy(Enemy enemy) { 
@@ -120,9 +126,10 @@ public class Player extends Entity {
             }
         }
 
-        NormBlock block = tm.getNormalTile(tc.getTile());
-        if(block != null) {
-            block.getImage().restoreDefault();
+        NormBlock[] block = tm.getNormalTile(tc.getTile());
+        for(int i = 0; i < block.length; i++) {
+            if(block[i] != null)
+                block[i].getImage().restoreDefault();
         }
     }
 

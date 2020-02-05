@@ -24,7 +24,7 @@ public class TileMapGenerator {
     private int[] grass = {52, 53, 54};
     private int[] dirt = {46, 47, 48};
 
-    private Tile[] tiles = { new Tile(0.6f, 35, grass), new Tile(1f, 29, dirt) };
+    private Tile[] tiles = { new Tile(0.6f, 35, grass), new Tile(1f, 29, dirt) }; // change this later?
 
     public TileMapGenerator(int chuckSize, int tileSize, MaterialManager mm) {
         this.mm = mm;
@@ -47,7 +47,7 @@ public class TileMapGenerator {
         }
     }
 
-    // O(m*9n^2) -> O(m*n^2)
+    // O(m*9n^2) -> O(m*n^2) -> O(n^2)
     /* private void beautifyTiles() {
         String result = "";
 
@@ -86,7 +86,7 @@ public class TileMapGenerator {
 
                 for(int k = 0; k < tiles.length; k++) {
                     if(result[i][j] < tiles[k].rarity) {
-                        if(k == 0 && result[i][j] < tiles[k].rarity - 0.2) {
+                        if(k == 0 && result[i][j] < Math.random() * 0.52) {
                             mm.add(MaterialManager.TYPE.TREE, j + i * chuckSize);
                         }
                         data[j + i * chuckSize] = tiles[k].generate();
@@ -99,6 +99,8 @@ public class TileMapGenerator {
         return data;
     }
 }
+
+
 
 class Tile {
     public float rarity;

@@ -69,7 +69,8 @@ public class EditState extends GameState {
                                     mouse.getY() - go.getSize() / 2 + cam.getPos().y + 64));
 
             if(!ps.getGameObjects().contains(go)) {
-                ps.getGameObjects().add(go.getBounds().distance(ps.getPlayerPos()), go);
+				ps.getGameObjects().add(go.getBounds().distance(ps.getPlayerPos()), go);
+				ps.getAABBObjects().insert(go);
             }
 
             clicked = true;

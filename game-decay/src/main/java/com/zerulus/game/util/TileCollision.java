@@ -22,6 +22,8 @@ public class TileCollision {
         yt = (int) ( (e.getPos().y + ay) + e.getBounds().getYOffset()) / 64;
         tileId = (xt + (yt * TileMapObj.height));
 
+        if(tileId > TileMapObj.height * TileMapObj.width) tileId = (TileMapObj.height * TileMapObj.width) - 2;
+
         return false;
     }
 
@@ -34,6 +36,10 @@ public class TileCollision {
                 
                 xt = (int) ( (e.getPos().x + ax) + (c % 2) * e.getBounds().getWidth() + e.getBounds().getXOffset()) / 64;
                 yt = (int) ( (e.getPos().y + ay) + (c / 2) * e.getBounds().getHeight() + e.getBounds().getYOffset()) / 64;
+
+                if(xt <= 0 || yt <= 0 || xt + (yt * TileMapObj.height) < 0 || xt + (yt * TileMapObj.height) > (TileMapObj.height * TileMapObj.width) - 2) {
+                    return true;
+                } 
                 
                 if(TileMapObj.event_blocks[xt + (yt * TileMapObj.height)] instanceof Block) {
                     Block block = TileMapObj.event_blocks[xt + (yt * TileMapObj.height)];

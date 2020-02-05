@@ -39,6 +39,8 @@ public class Slots {
 
         this.width = button.getWidth() + size;
         this.height = button.getHeight() + size;
+
+        this.button.setSlot(this); // temp fix
     }
 
     public Slots(Button button, Slots[] childSlots, BufferedImage[] sprite, Vector2f[] pos, int size) {
@@ -47,16 +49,21 @@ public class Slots {
 
         this.width = button.getWidth() + size;
         this.height = button.getHeight() + size;
-        this.childSlots = childSlots; 
+        this.childSlots = childSlots;
+
+        this.button.setSlot(this); // temp fix
     }
 
     public void setVisible(boolean b) { visibility = b; }
-    public void showChildren(boolean b) { showChildren = b; }
+    public void showChildren(boolean b) { showChildren = (childSlots != null) ? b : false; }
+
+    public Button getButton() { return button; }
+    public boolean isVisibleChildren() { return showChildren; }
 
     public void update(double time) {
         button.update(time);
 
-        if(childSlots != null && showChildren) {
+        if(showChildren) {
             for(int i = 0; i < childSlots.length; i++) {
                 childSlots[i].update(time);
             }
@@ -66,7 +73,7 @@ public class Slots {
     public void input(MouseHandler mouse, KeyHandler key) {
         button.input(mouse, key);
 
-        if(childSlots != null && showChildren) {
+        if(showChildren) {
             for(int i = 0; i < childSlots.length; i++) {
                 childSlots[i].input(mouse, key);
             }
@@ -91,7 +98,7 @@ public class Slots {
                         slot[i].getHeight() + size, null);
         }
 
-        if(childSlots != null && showChildren) {
+        if(showChildren) {
             for(int i = 0; i < childSlots.length; i++) {
                 childSlots[i].render(g);
             }

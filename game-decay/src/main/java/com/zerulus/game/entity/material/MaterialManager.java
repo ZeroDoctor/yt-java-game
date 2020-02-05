@@ -44,19 +44,20 @@ public class MaterialManager {
         tempMaterial[material.getValue()].images.add(sprite);
     }
 
-    public void add(TYPE material, int position) {
+    public int add(TYPE material, int position) {
 
         int size = Math.max(tileSize, tempMaterial[material.getValue()].size);
-        int length = (tempMaterial[material.getValue()].images.size() / 10) + 1;
+        int length = (tempMaterial[material.getValue()].images.size() / 10) + 1; // 10 images in trees SpriteSheet, thus change later
         int index = (int) (Math.random() * (10 * length)) % (tempMaterial[material.getValue()].images.size()); 
 
         Vector2f pos = new Vector2f((position % chuckSize) * size, (position / chuckSize) * size);
 
-        Material mat = new Material(tempMaterial[material.getValue()].images.get(index), pos, size, material.getValue()); 
+        Material mat = new Material(tempMaterial[material.getValue()].images.get(index).getNewSubimage(), pos, size, material.getValue()); 
         float distance = mat.getBounds().distance(playerStart);
         list.add(new GameObjectKey(distance, mat));
-    }
 
+        return material.getValue();
+    }
 }
 
 class TemplateMaterial {

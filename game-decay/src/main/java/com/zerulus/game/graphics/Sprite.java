@@ -161,5 +161,9 @@ public class Sprite {
 		temp.copyData(newImage.getRaster());
         return new Sprite(newImage);
 	}
+
+	public Sprite getNewSubimage() {
+		return getNewSubimage(0, 0, this.w, this.h);
+	}
 }
 

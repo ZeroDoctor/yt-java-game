@@ -55,12 +55,16 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
-    public void init() {
-        running = true;
-
+    public void initGraphics() {
         img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         g = (Graphics2D) img.getGraphics();
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    }
+
+    public void init() {
+        running = true;
+
+        initGraphics();
 
         mouse = new MouseHandler(this);
         key = new KeyHandler(this);
@@ -162,7 +166,7 @@ public class GamePanel extends JPanel implements Runnable {
     public void draw() {
         do {
             Graphics g2 = (Graphics) bs.getDrawGraphics();
-            g2.drawImage(img, 8, 31, width, height, null);
+            g2.drawImage(img, 3, 26, width + 10, height + 10, null); // true 8, 31
             g2.dispose();
             bs.show();
         } while(bs.contentsLost());

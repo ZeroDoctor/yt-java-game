@@ -33,12 +33,14 @@ public class Button {
     private boolean hovering = false;
     private int hoverSize;
     private ArrayList<ClickedEvent> events;
+    private ArrayList<SlotEvent> slotevents;
     private boolean clicked = false;
     private boolean pressed = false;
     private boolean canHover = true;
     private boolean drawString = true;
 
     private float pressedtime;
+    private Slots slot; // temp fix
 
     // ******************************************** ICON CUSTOM POS *******************************************
 
@@ -48,6 +50,7 @@ public class Button {
         this.bounds = new AABB(iPos, this.image.getWidth(), this.image.getHeight());
 
         events = new ArrayList<ClickedEvent>();
+        slotevents = new ArrayList<SlotEvent>();
         this.canHover = false;
         this.drawString = false;
     }
@@ -172,6 +175,8 @@ public class Button {
         this.bounds = new AABB(iPos, iWidth, iHeight);
     }
 
+    // ******************************************** END ************************************************************
+
     public void addHoverImage(BufferedImage image) {
         this.hoverImage = image;
         this.canHover = true;
@@ -185,6 +190,8 @@ public class Button {
 	public boolean getHovering() { return hovering; }
     public void setHover(boolean b) { this.canHover = b; }
     public void addEvent(ClickedEvent e) { events.add(e);}
+    public void addSlotEvent(SlotEvent e) { slotevents.add(e); }
+    public void setSlot(Slots slot) { this.slot = slot;} // temp fix
 
     public int getWidth() { return (int) bounds.getWidth(); }
     public int getHeight() { return (int) bounds.getHeight(); }
@@ -228,6 +235,10 @@ public class Button {
                 for(int i = 0; i < events.size(); i++) {
                     events.get(i).action(1);
                 }
+                if(slotevents == null) return;
+                for(int i = 0; i < slotevents.size(); i++) {
+                    slotevents.get(i).action(slot);
+                }
             } else if(mouse.getButton() == -1) {
                 clicked = false;
             }
@@ -250,6 +261,14 @@ public class Button {
             g.drawImage(image, (int) iPos.x, (int) iPos.y, (int) bounds.getWidth(), (int) bounds.getHeight(), null);
         }
         
+    }
+
+    public interface ClickedEvent {
+        void action(int mouseButton);
+    }
+
+    public interface SlotEvent {
+        void action(Slots slot);
     }
 
 }
