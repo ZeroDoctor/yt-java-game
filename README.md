@@ -12,6 +12,6 @@ Run with: mvn exec:java
 ---
 ## Demo So Far ##
 
-![alt text](https://github.com/ZeroDoctor/yt-java-game/pic/demo_0.png "Random Generated World")  
+![alt text](https://github.com/ZeroDoctor/yt-java-game/tree/master/pic/demo_0.png "Random Generated World")  
 
-![alt text](https://github.com/ZeroDoctor/yt-java-game/pic/demo_1.png "Static Dungeon")
+![alt text](https://github.com/ZeroDoctor/yt-java-game/tree/master/pic/demo_1.png "Static Dungeon")
