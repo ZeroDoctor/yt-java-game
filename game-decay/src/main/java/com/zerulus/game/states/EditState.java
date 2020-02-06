@@ -27,7 +27,8 @@ public class EditState extends GameState {
     private int selection = 0;
     private GameObject e_enemy1;
     private GameObject e_enemy2;
-    private GameObject[] entityList = {gameObject, e_enemy1, e_enemy2};
+	private GameObject[] entityList = {gameObject, e_enemy1, e_enemy2};
+	private int count = 0;
 
 
     public EditState(GameStateManager gsm, Camera cam) {
@@ -69,6 +70,8 @@ public class EditState extends GameState {
                                     mouse.getY() - go.getSize() / 2 + cam.getPos().y + 64));
 
             if(!ps.getGameObjects().contains(go)) {
+				count++;
+				go.setName("enemy: " + Integer.toString(selection) + " count: " + Integer.toString(count));
 				ps.getGameObjects().add(go.getBounds().distance(ps.getPlayerPos()), go);
 				ps.getAABBObjects().insert(go);
             }

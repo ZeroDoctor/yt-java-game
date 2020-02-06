@@ -20,49 +20,52 @@ public class AABBTree {
     }
 
     public void insert(GameObject go) {
-        AABBNode node = new AABBNode(go, nodeList.size());
-        
+		AABBNode node = new AABBNode(go, nodeList.size());
+		System.out.println("Adding: game object to tree...");
+		nodeList.add(node);
+
         AABBNode index = insertLeaf(node);
         nodeIndex.put(go, index);
     }
 
 	// TODO: fix inifite loop. check if tree is correctly created
-    public AABBNode insertLeaf(AABBNode node) {
+    public AABBNode insertLeaf(AABBNode newNode) {
 
         // make sure we are inserting a new leaf?
 
-        if(nodeList.size() == 0) {
-            nodeList.add(node); // keep track of root index?
-            rootIndex = node.index;
+        if(nodeList.size() == 1) {
+            rootIndex = newNode.index;
             System.out.println("WARNING: This is the root node");
-            return node;
-        }
-
+            return newNode;
+		}
+		
+		// looking for a suitable leaf node
         int treeIndex = rootIndex;
         while(!nodeList.get(treeIndex).isLeaf()) {
 
-            AABBNode treeNode = nodeList.get(treeIndex);
-            AABBNode rightNode = nodeList.get(treeNode.right);
-            AABBNode leftNode = nodeList.get(treeNode.left);
+			AABB aabb = newNode.aabb; // node to insert
+            AABBNode treeNode = nodeList.get(treeIndex); // node that could be root or parent/grand
+            AABBNode rightNode = nodeList.get(treeNode.right); // node that could be siblings / cousins or nil
+            AABBNode leftNode = nodeList.get(treeNode.left); // node that could be siblings / cousins or nil
 
-            AABB combinedAabb = treeNode.aabb.merge(node.aabb);
+            AABB combinedAabb = treeNode.aabb.merge(aabb); // new node that could be parent/grand of node to insert
 
-            float parentCost = 2.0f * combinedAabb.getSurfaceArea();
-            float minPushCost = 2.0f * (combinedAabb.getSurfaceArea() - treeNode.aabb.getSurfaceArea());
+            float parentCost = 2.0f * combinedAabb.getSurfaceArea(); // cost of being a parent (lol)
+            float minPushCost = 2.0f * (combinedAabb.getSurfaceArea() - treeNode.aabb.getSurfaceArea()); // cost of being the next descendant
 
             float costLeft = 0;
             float costRight = 0;
 
             if(leftNode.isLeaf()) {
-                costLeft = node.aabb.merge(leftNode.aabb).getSurfaceArea() + minPushCost;
+                costLeft = aabb.merge(leftNode.aabb).getSurfaceArea() + minPushCost;
             } else {
-                costLeft = (node.aabb.merge(leftNode.aabb).getSurfaceArea() - leftNode.aabb.getSurfaceArea()) + minPushCost;
+                costLeft = (aabb.merge(leftNode.aabb).getSurfaceArea() - leftNode.aabb.getSurfaceArea()) + minPushCost;
             }
 
             if(rightNode.isLeaf()) {
-                costRight = node.aabb.merge(rightNode.aabb).getSurfaceArea() + minPushCost;
+                costRight = aabb.merge(rightNode.aabb).getSurfaceArea() + minPushCost;
             } else {
-                costRight = (node.aabb.merge(rightNode.aabb).getSurfaceArea() - rightNode.aabb.getSurfaceArea()) + minPushCost;
+                costRight = (aabb.merge(rightNode.aabb).getSurfaceArea() - rightNode.aabb.getSurfaceArea()) + minPushCost;
             }
 
             if(parentCost < costLeft && parentCost < costRight) {
@@ -76,16 +79,15 @@ public class AABBTree {
 			}
         }
 
-        int siblingIndex = treeIndex;
-        AABBNode sibling = nodeList.get(siblingIndex);
+		// suitable sibling leaf node found
+        AABBNode sibling = nodeList.get(treeIndex);
         int oldParentIndex = sibling.parent;
 
-        AABBNode newParent = new AABBNode(sibling.parent, siblingIndex, node.index, nodeList.size(), -1);
-        newParent.aabb = node.aabb.merge(sibling.aabb);
-        nodeList.add(newParent);
+        AABBNode newParent = new AABBNode(sibling.parent, treeIndex, newNode.index, nodeList.size(), newNode.height + 1);
+        newParent.aabb = newNode.aabb.merge(sibling.aabb);
 
-        nodeList.get(node.index).parent = newParent.index;
-        nodeList.get(siblingIndex).parent = newParent.index;
+        nodeList.get(newNode.index).parent = newParent.index;
+		nodeList.get(treeIndex).parent = newParent.index;
 
         if(oldParentIndex == -1) {
             rootIndex = newParent.index;
@@ -96,10 +98,12 @@ public class AABBTree {
             } else {
                 nodeList.get(oldParentIndex).right = newParent.index;
             }
-        }
+		}
+		
+		nodeList.add(newParent);
 
-        fixUpwardsTree(node.parent);
-        return node;
+        fixUpwardsTree(newNode.parent);
+        return newNode;
     }
 
     public void removeObject(GameObject go) {
@@ -192,19 +196,19 @@ public class AABBTree {
 	}
 	
 	public String toString() {
-		String result = "[";
+		String result = "[\n";
 		ArrayList<AABBNode> tree = nodeList;
 
 		for(int i = 0; i < tree.size(); i++) {
-			result += "\t{ " + tree.get(i).index + ", " +
-				tree.get(i).right + ", " + tree.get(i).left + 
+			result += "  " + i + ":{ " + tree.get(i).go + ", " +
+				tree.get(i).left + ", " + tree.get(i).right + 
 				", " + tree.get(i).parent + " }\n";
 		}
 
 		return result + "]";
 	}
 
-    class AABBNode {
+    private class AABBNode {
 
         public AABB aabb;
         public GameObject go;
@@ -214,7 +218,7 @@ public class AABBTree {
         public int right = -1;
 
         public int index;
-        public int next = -1;
+        public int height = -1; // not in use
 
         public boolean isLeaf() { return left == -1; }
 
@@ -224,12 +228,12 @@ public class AABBTree {
             this.index = index;
         }
 
-        public AABBNode(int parent, int left, int right, int index, int next) {
+        public AABBNode(int parent, int left, int right, int index, int height) {
             this.parent = parent;
             this.left = left;
             this.right = right;
             this.index = index;
-            this.next = left;
+            this.height = height;
         }
-    }
+	}
 }

@@ -59,7 +59,8 @@ public class Player extends Entity {
 
         hasIdle = false;
         health = 500;
-        maxHealth = 500;
+		maxHealth = 500;
+		name = "player";
     }
 
     public void setTargetEnemy(Enemy enemy) { 

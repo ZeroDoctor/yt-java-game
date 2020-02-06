@@ -29,6 +29,7 @@ public abstract class GameObject {
     
     protected boolean teleported = false;
 	protected TileCollision tc;
+	protected String name = "";
 
     public GameObject(SpriteSheet sprite, Vector2f origin, int spriteX, int spriteY, int size) {
         this(origin, size);
@@ -53,7 +54,8 @@ public abstract class GameObject {
     }
 
     public Sprite getImage() { return image; }
-    
+	
+	public void setName(String name) { this.name = name; }
     public void setSprite(SpriteSheet sprite) { this.sprite = sprite; }
     public void setSize(int i) { size = i; }
     public void setMaxSpeed(float f) { maxSpeed = f; }
@@ -84,4 +86,9 @@ public abstract class GameObject {
     public void render(Graphics2D g) {
         g.drawImage(image.image, (int) (pos.getWorldVar().x), (int) (pos.getWorldVar().y), size, size, null);
 	}
+
+	public String toString() {
+		return "$" + name;
+	}
+
 }
